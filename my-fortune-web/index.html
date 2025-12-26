@@ -2,155 +2,38 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life K-Line | 人生资产K线图</title>
     <style>
-        :root {
-            --gold: #f0b90b;
-            --bg: #0b0e11;
-            --card: #1e2329;
-            --text: #eaecef;
-        }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'PingFang SC', -apple-system, sans-serif;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .header {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0 20px 0;
-        }
-        .lang-btn {
-            background: none;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        input {
-            background: var(--bg);
-            border: 1px solid #474d57;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .main-btn {
-            width: 100%;
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #chart { width: 100%; height: 400px; margin-top: 20px; background: #161a1e; border-radius: 8px;}
-        #shareArea { display: none; margin-top: 20px; }
-        .share-card {
-            background: #2b3139;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px dashed var(--gold);
-        }
-        .copy-btn {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .tips { font-size: 11px; color: #707a8a; margin-top: 20px; text-align: center; }
+        :root { --gold: #f0b90b; --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --green: #0ecb81; --red: #f6465d; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 450px; background: var(--card); padding: 20px; border-radius: 16px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .header { display: flex; justify-content: space-between; width: 100%; max-width: 450px; align-items: center; margin-bottom: 15px; }
+        .input-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        input { background: var(--bg); border: 1px solid #474d57; color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 14px; }
+        button#main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 5px; }
+        #canvasContainer { width: 100%; height: 350px; margin-top: 20px; position: relative; background: #161a1e; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        canvas { width: 100%; height: 100%; cursor: crosshair; }
+        #shareArea { display: none; margin-top: 20px; border: 1px dashed var(--gold); padding: 15px; border-radius: 12px; font-size: 14px; background: rgba(240,185,11,0.05); }
+        .copy-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 8px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .tips { font-size: 11px; color: #707a8a; margin-top: 15px; text-align: center; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 id="t-title" style="color:var(--gold); font-size: 22px; margin:0;">人生K线图</h1>
-        <button class="lang-btn" onclick="toggleLang()" id="t-lang">English</button>
+        <h2 id="t-title" style="color:var(--gold); margin:0;">人生K线图</h2>
+        <button onclick="toggleLang()" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:4px 10px; border-radius:4px; font-size:12px; cursor:pointer;">EN/中</button>
     </div>
 
     <div class="container">
         <div class="input-grid">
-            <input type="number" id="year" placeholder="年份">
-            <input type="number" id="month" placeholder="月(选)">
-            <input type="number" id="day" placeholder="日(选)">
+            <input type="number" id="year" placeholder="出生年">
+            <input type="number" id="month" placeholder="月">
+            <input type="number" id="day" placeholder="日">
         </div>
-        <button class="main-btn" onclick="generate()" id="t-btn">生成我的生命周期表</button>
+        <button onclick="generate()" id="main-btn">立即生成生命周期表</button>
         
-        <div id="chart"></div>
-
-        <div id="shareArea">
-            <div class="share-card">
-                <div id="shareText" style="font-size:14px; line-height:1.6; white-space:pre-wrap;"></div>
-                <button class="copy-btn" onclick="copyText()" id="t-copyBtn">复制分享文案</button>
-            </div>
-        </div>
-
-        <p class="tips" id="t-disclaimer">* 基于流年算法模拟，不构成建议</p>
-    </div>
-
-    <script src="https://lib.baomitu.com/echarts/5.4.3/echarts.min.js"></script>
-    <script>
-        let currentLang = 'zh';
-        const i18n = {
-            zh: {
-                title: "人生K线图", btn: "生成我的生命周期表", lang: "English",
-                placeholderY: "年份", placeholderM: "月(选)", placeholderD: "日(选)",
-                disclaimer: "* 基于流年算法模拟，不构成建议", copyBtn: "复制分享文案",
-                copySuccess: "复制成功！去分享给好友吧",
-                tags: ["主升浪", "底部筑底", "财富觉醒", "潜龙在渊", "逆势反转"],
-                tpl: "📊 我的【人生K线图】亮了！\n✨ 核心状态：#{tag}\n🚀 财富主升浪预计在 {year} 年开启！\n🔗 测测你的未来："
-            },
-            en: {
-                title: "Life K-Line", btn: "Generate My Chart", lang: "中文",
-                placeholderY: "Year", placeholderM: "Mon(Opt)", placeholderD: "Day(Opt)",
-                disclaimer: "* Algorithmic simulation, not financial advice.",
-                copyBtn: "Copy Share Text", copySuccess: "Copied!",
-                tags: ["Bull Market", "Bottoming", "Wealth Awakening", "Recovery", "Ready to Fly"],
-                tpl: "📊 My Life K-Line Analysis!\n✨ Status: #{tag}\n🚀 Bull market expected in {year}!\n🔗 Link: "
-            }
-        };
-
-        function toggleLang() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            document.getElementById('t-title').innerText = i18n[currentLang].title;
-            document.getElementById('t-btn').innerText = i18n[currentLang].btn;
-            document.getElementById('t-lang').innerText = i18n[currentLang].lang;
-            document.getElementById('year').placeholder = i18n[currentLang].placeholderY;
-            document.getElementById('month').placeholder = i18n[currentLang].placeholderM;
-            document.getElementById('day').placeholder = i18n[currentLang].placeholderD;
-            document.getElementById('t-disclaimer
+        <div id="canvasContainer">
+            <canvas id="kCanvas"></canvas>
+            <div id
