@@ -5,33 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life K-Line | 人生资产K线图</title>
     <style>
-        :root { --gold: #f0b90b; --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --green: #0ecb81; --red: #f6465d; --axis: #474d57; }
+        :root { --gold: #f0b90b; --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --axis: #474d57; --green: #0ecb81; --red: #f6465d; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 800px; background: var(--card); padding: 25px; border-radius: 16px; box-sizing: border-box; margin-top: 10px; }
+        .header { display: flex; justify-content: space-between; width: 100%; max-width: 800px; align-items: center; margin: 10px 0; }
+        .input-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        input { background: var(--bg); border: 1px solid var(--axis); color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 16px; outline: none; }
+        button#main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
         
-        /* 优化点2：拓宽页面容器 */
-        .container { width: 100%; max-width: 800px; background: var(--card); padding: 25px; border-radius: 16px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #canvasWrap { width: 100%; height: 420px; margin-top: 20px; background: #161a1e; border-radius: 8px; border: 1px solid var(--axis); position: relative; overflow: hidden; cursor: crosshair; }
+        canvas { display: block; width: 100%; height: 100%; }
         
-        .header { display: flex; justify-content: space-between; width: 100%; max-width: 800px; align-items: center; margin: 10px 0 20px 0; }
-        .input-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        input { background: var(--bg); border: 1px solid var(--axis); color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 16px; }
-        input:focus { border-color: var(--gold); }
+        /* 交互提示框 - 解析增强 */
+        #tooltip { position: absolute; display: none; background: rgba(30, 35, 41, 0.95); border: 1px solid var(--gold); padding: 12px; border-radius: 8px; font-size: 13px; pointer-events: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); line-height: 1.6; min-width: 140px; }
         
-        button#main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        button#main-btn:active { transform: scale(0.98); opacity: 0.9; }
-        
-        #canvasWrap { width: 100%; height: 400px; margin-top: 20px; background: #161a1e; border-radius: 8px; position: relative; overflow: hidden; }
-        canvas { display: block; width: 100% !important; height: 100% !important; }
-        
-        #shareArea { display: none; margin-top: 20px; border: 1px dashed var(--gold); padding: 20px; border-radius: 12px; font-size: 15px; background: rgba(240,185,11,0.05); }
-        .copy-btn { background: var(--gold); border: none; color: #000; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; }
-        .tips { font-size: 12px; color: #707a8a; margin-top: 20px; text-align: center; }
+        #shareArea { display: none; margin-top: 20px; border: 1px dashed var(--gold); padding: 20px; border-radius: 12px; background: rgba(240,185,11,0.05); }
+        .copy-btn { background: var(--gold); border: none; color: #000; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        .instruction { font-size: 12px; color: var(--gold); margin-top: 10px; text-align: center; opacity: 0.8; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 id="t-title" style="color:var(--gold); margin:0; letter-spacing: 1px;">人生资产K线图</h2>
-        <button onclick="toggleLang()" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:6px 12px; border-radius:4px; font-size:13px; cursor:pointer; font-weight:bold;">EN/中文</button>
+        <h2 id="t-title" style="color:var(--gold); margin:0;">人生资产K线图</h2>
+        <button id="lang-btn" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:6px 12px; border-radius:4px; cursor:pointer;">English</button>
     </div>
 
     <div class="container">
@@ -40,22 +37,181 @@
             <input type="number" id="month" placeholder="月">
             <input type="number" id="day" placeholder="日">
         </div>
-        <button onclick="generate()" id="main-btn">分析我的财富生命周期</button>
+        <button id="main-btn">分析我的财富生命周期</button>
         
         <div id="canvasWrap">
+            <div id="tooltip"></div>
             <canvas id="kCanvas"></canvas>
         </div>
+        <div class="instruction" id="t-instr">💡 点击K线查看当年流年解析</div>
 
         <div id="shareArea">
-            <div id="shareText" style="line-height:1.7; white-space:pre-wrap; color:var(--text);"></div>
-            <button class="copy-btn" onclick="copyText()" id="t-copy">复制分享文案</button>
+            <div id="shareText" style="line-height:1.8; white-space:pre-wrap; font-size:16px;"></div>
+            <button class="copy-btn" id="copy-btn">复制分析文案</button>
         </div>
-
-        <p class="tips" id="t-tips">* 本地渲染引擎已就绪 | 基于算法逻辑模拟，不构成财务建议</p>
     </div>
 
 <script>
-    let lang = 'zh';
+(function() {
+    let currentLang = 'zh';
+    let cachedData = [];
+    
     const i18n = {
-        zh: { title: "人生资产K线图", btn: "分析我的财富生命周期", copy: "复制成功！", copyBtn: "复制分享文案", tags: ["财富主升浪", "底部构筑中", "潜龙在渊", "逆势翻盘", "高位盘整"], tpl: "📊 我的【人生K线图】分析结果：\n✨ 核心状态：#{tag}\n🚀 财富爆发期预计在 {year} 年！\n🔗 测测你的：{url}" },
-        en: { title: "Life Asset K-Line", btn: "Analyze My Life Cycle", copy: "Copied!", copyBtn: "Copy Share Text", tags: ["Bullish Surge", "Bottoming Out", "Hidden Dragon", "Reversal Point", "High Volatility"], tpl
+        zh: {
+            title: "人生资产K线图", btn: "分析我的财富生命周期", instr: "💡 点击K线查看当年流年解析",
+            yPlace: "出生年份 (YYYY)", copyBtn: "复制分享文案", copyOk: "复制成功！",
+            tags: ["财富主升浪", "底部筑底", "潜龙在渊", "逆势翻盘"],
+            tpl: "📊 我的【人生K线图】分析结果：\n✨ 核心状态：#{tag}\n🚀 财富爆发期预计在 {year} 年开启！",
+            analysis: [
+                { k: "大显身手", d: "运势如虹，适合主动出击。" },
+                { k: "厚积薄发", d: "稳步上升，多年耕耘见成效。" },
+                { k: "蛰伏蓄势", d: "低位横盘，宜学习进修观望。" },
+                { k: "谨防波动", d: "高位震荡，注意守财防风险。" },
+                { k: "逆境重生", d: "触底反弹，迎来关键转折点。" },
+                { k: "顺势而为", d: "借力使力，事半功倍之年。" }
+            ]
+        },
+        en: {
+            title: "Life Asset K-Line", btn: "Analyze My Life Cycle", instr: "💡 Tap bars to see year analysis",
+            yPlace: "Birth Year (YYYY)", copyBtn: "Copy Text", copyOk: "Copied!",
+            tags: ["Bullish Surge", "Bottoming", "Rising Star", "Turning Point"],
+            tpl: "📊 My Life K-Line Analysis:\n✨ Status: #{tag}\n🚀 Peak Wealth Era: Year {year}!",
+            analysis: [
+                { k: "Great Success", d: "Luck is soaring, take action." },
+                { k: "Steady Growth", d: "Efforts finally paying off." },
+                { k: "Preparation", d: "Stay low and keep learning." },
+                { k: "Caution", d: "High volatility, stay defensive." },
+                { k: "Rebirth", d: "Market bottomed, turning point." },
+                { k: "Go with Flow", d: "Half the effort, twice result." }
+            ]
+        }
+    };
+
+    function mulberry32(a) {
+        return function() {
+            var t = a += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+    }
+
+    const langBtn = document.getElementById('lang-btn');
+    const mainBtn = document.getElementById('main-btn');
+    const canvas = document.getElementById('kCanvas');
+    const tooltip = document.getElementById('tooltip');
+
+    langBtn.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        langBtn.innerText = currentLang === 'zh' ? 'English' : '中文';
+        document.getElementById('t-title').innerText = i18n[currentLang].title;
+        mainBtn.innerText = i18n[currentLang].btn;
+        document.getElementById('t-instr').innerText = i18n[currentLang].instr;
+        document.getElementById('year').placeholder = i18n[currentLang].yPlace;
+        document.getElementById('copy-btn').innerText = i18n[currentLang].copyBtn;
+    });
+
+    mainBtn.addEventListener('click', () => {
+        const yVal = document.getElementById('year').value;
+        const mVal = document.getElementById('month').value || 1;
+        const dVal = document.getElementById('day').value || 1;
+        if (!yVal) return;
+        
+        const birthYear = parseInt(yVal);
+        const seedValue = birthYear + parseInt(mVal) * 31 + parseInt(dVal);
+        const seededRandom = mulberry32(seedValue);
+
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = canvas.offsetWidth * dpr;
+        canvas.height = canvas.offsetHeight * dpr;
+        ctx.scale(dpr, dpr);
+
+        const w = canvas.offsetWidth;
+        const h = canvas.offsetHeight;
+        const pad = { top: 40, right: 30, bottom: 50, left: 60 };
+        const cW = w - pad.left - pad.right;
+        const cH = h - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, w, h);
+        cachedData = [];
+
+        // 轴线
+        ctx.strokeStyle = "#474d57";
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, h-pad.bottom); ctx.lineTo(w-pad.right, h-pad.bottom); ctx.stroke();
+
+        let curY = cH * 0.7;
+        let peakYear = birthYear;
+        let highestH = Infinity;
+
+        for (let i = 0; i < 50; i++) {
+            const x = pad.left + i * (cW / 50) + (cW / 100);
+            const move = Math.sin(seedValue * 0.1 + i * 0.5) * 20 + (seededRandom() - 0.5) * 40;
+            const open = curY;
+            const close = curY - move;
+            
+            const drawO = Math.min(Math.max(open, 0), cH) + pad.top;
+            const drawC = Math.min(Math.max(close, 0), cH) + pad.top;
+            const high = Math.min(drawO, drawC) - seededRandom() * 10;
+            const low = Math.max(drawO, drawC) + seededRandom() * 10;
+
+            // 存储解析所需的随机索引
+            const analysisIdx = Math.floor(seededRandom() * i18n.zh.analysis.length);
+
+            cachedData.push({ x, open: drawO, close: drawC, year: birthYear + i, aIdx: analysisIdx });
+
+            const isUp = close < open;
+            ctx.strokeStyle = ctx.fillStyle = isUp ? "#0ecb81" : "#f6465d";
+            ctx.beginPath(); ctx.moveTo(x, high); ctx.lineTo(x, low); ctx.stroke();
+            const bW = Math.max((cW / 50) * 0.7, 2);
+            ctx.fillRect(x - bW/2, Math.min(drawO, drawC), bW, Math.abs(drawO - drawC) + 1);
+
+            if (high < highestH) { highestH = high; peakYear = birthYear + i; }
+            curY = close;
+
+            if ((birthYear + i) % 10 === 0) {
+                ctx.fillStyle = "#707a8a";
+                ctx.font = "11px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText(birthYear + i, x, h - pad.bottom + 20);
+            }
+        }
+        
+        document.getElementById('shareText').innerText = i18n[currentLang].tpl.replace("{tag}", i18n[currentLang].tags[seedValue % 4]).replace("{year}", peakYear);
+        document.getElementById('shareArea').style.display = 'block';
+    });
+
+    // 点击交互解析逻辑
+    canvas.addEventListener('click', (e) => {
+        if (cachedData.length === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        let closest = cachedData.reduce((prev, curr) => Math.abs(curr.x - mouseX) < Math.abs(prev.x - mouseX) ? curr : prev);
+
+        if (Math.abs(closest.x - mouseX) < 15) {
+            const baseO = cachedData[0].open;
+            const change = (((baseO - closest.close) / baseO) * 100).toFixed(1);
+            const color = change >= 0 ? "var(--green)" : "var(--red)";
+            const info = i18n[currentLang].analysis[closest.aIdx];
+
+            tooltip.style.display = "block";
+            tooltip.style.left = (closest.x > rect.width - 150 ? closest.x - 170 : closest.x + 10) + "px";
+            tooltip.style.top = "60px";
+            tooltip.innerHTML = `
+                <div style="font-weight:bold; color:var(--gold); border-bottom:1px solid #444; padding-bottom:4px; margin-bottom:6px;">${closest.year}年 · ${info.k}</div>
+                <div style="font-size:12px; color:#fff;">${info.d}</div>
+                <div style="font-size:12px; margin-top:4px;">较起点变动: <span style="color:${color}">${change >= 0 ? '+':''}${change}%</span></div>
+            `;
+        } else { tooltip.style.display = "none"; }
+    });
+
+    document.getElementById('copy-btn').addEventListener('click', () => {
+        const el = document.createElement('textarea');
+        el.value = document.getElementById('shareText').innerText;
+        document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+        alert(i18n[currentLang].copyOk);
+    });
+})();
+</script>
+</body>
+</html>
