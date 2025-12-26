@@ -6,48 +6,60 @@
     <title>Life K-Line | 人生资产K线图</title>
     <style>
         :root { --gold: #f0b90b; --bg: #0b0e11; --card: #1e2329; --text: #eaecef; --axis: #474d57; --green: #0ecb81; --red: #f6465d; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 800px; background: var(--card); padding: 25px; border-radius: 16px; box-sizing: border-box; margin-top: 10px; }
-        .header { display: flex; justify-content: space-between; width: 100%; max-width: 800px; align-items: center; margin: 10px 0; }
-        .input-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        input { background: var(--bg); border: 1px solid var(--axis); color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 16px; outline: none; }
-        button#main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        #canvasWrap { width: 100%; height: 420px; margin-top: 20px; background: #161a1e; border-radius: 8px; border: 1px solid var(--axis); position: relative; overflow: hidden; cursor: crosshair; }
+        /* 布局优化：手机端全宽，电脑端居中 */
+        .container { width: 100%; max-width: 600px; background: var(--card); padding: 15px; border-radius: 16px; box-sizing: border-box; margin-top: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .header { display: flex; justify-content: space-between; width: 100%; max-width: 600px; align-items: center; margin: 10px 0; }
+        .header h2 { font-size: 20px; color: var(--gold); margin: 0; }
+
+        .input-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        input { background: var(--bg); border: 1px solid var(--axis); color: white; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 14px; outline: none; -webkit-appearance: none; }
+        
+        button { border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        #main-btn { width: 100%; background: var(--gold); color: #000; padding: 15px; font-size: 16px; margin-bottom: 10px; }
+        
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; display: none; }
+        .secondary-btn { background: #333; color: var(--gold); border: 1px solid var(--gold); padding: 12px; font-size: 14px; }
+
+        #canvasWrap { width: 100%; height: 350px; margin-top: 10px; background: #161a1e; border-radius: 8px; border: 1px solid var(--axis); position: relative; overflow: hidden; touch-action: none; }
         canvas { display: block; width: 100%; height: 100%; }
         
-        /* 交互提示框 - 解析增强 */
-        #tooltip { position: absolute; display: none; background: rgba(30, 35, 41, 0.95); border: 1px solid var(--gold); padding: 12px; border-radius: 8px; font-size: 13px; pointer-events: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); line-height: 1.6; min-width: 140px; }
+        #tooltip { position: absolute; display: none; background: rgba(30, 35, 41, 0.95); border: 1px solid var(--gold); padding: 10px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: 150px; }
         
-        #shareArea { display: none; margin-top: 20px; border: 1px dashed var(--gold); padding: 20px; border-radius: 12px; background: rgba(240,185,11,0.05); }
-        .copy-btn { background: var(--gold); border: none; color: #000; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; }
-        .instruction { font-size: 12px; color: var(--gold); margin-top: 10px; text-align: center; opacity: 0.8; }
+        #shareArea { display: none; margin-top: 15px; border: 1px dashed var(--gold); padding: 15px; border-radius: 12px; background: rgba(240,185,11,0.05); }
+        .instruction { font-size: 11px; color: var(--gold); margin-top: 8px; text-align: center; opacity: 0.7; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 id="t-title" style="color:var(--gold); margin:0;">人生资产K线图</h2>
-        <button id="lang-btn" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:6px 12px; border-radius:4px; cursor:pointer;">English</button>
+        <h2 id="t-title">人生资产K线图</h2>
+        <button id="lang-btn" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 10px; border-radius:4px; font-size:12px;">English</button>
     </div>
 
     <div class="container">
         <div class="input-grid">
-            <input type="number" id="year" placeholder="出生年份 (YYYY)">
+            <input type="number" id="year" placeholder="出生年">
             <input type="number" id="month" placeholder="月">
             <input type="number" id="day" placeholder="日">
         </div>
-        <button id="main-btn">分析我的财富生命周期</button>
+        <button id="main-btn">生成我的生命周期表</button>
         
         <div id="canvasWrap">
             <div id="tooltip"></div>
             <canvas id="kCanvas"></canvas>
         </div>
-        <div class="instruction" id="t-instr">💡 点击K线查看当年流年解析</div>
+        <div class="instruction" id="t-instr">💡 点击K线查看当年运势解析</div>
 
         <div id="shareArea">
-            <div id="shareText" style="line-height:1.8; white-space:pre-wrap; font-size:16px;"></div>
-            <button class="copy-btn" id="copy-btn">复制分析文案</button>
+            <div id="shareText" style="line-height:1.6; white-space:pre-wrap; font-size:14px; margin-bottom:10px;"></div>
+        </div>
+
+        <div class="action-btns" id="action-btns">
+            <button class="secondary-btn" id="copy-btn">复制文案</button>
+            <button class="secondary-btn" id="save-btn" style="background: var(--gold); color:#000;">保存图表图片</button>
         </div>
     </div>
 
@@ -58,10 +70,10 @@
     
     const i18n = {
         zh: {
-            title: "人生资产K线图", btn: "分析我的财富生命周期", instr: "💡 点击K线查看当年流年解析",
-            yPlace: "出生年份 (YYYY)", copyBtn: "复制分享文案", copyOk: "复制成功！",
+            title: "人生资产K线图", btn: "生成我的生命周期表", instr: "💡 点击K线查看当年运势解析",
+            yPlace: "出生年", mPlace: "月", dPlace: "日", copyBtn: "复制文案", saveBtn: "保存图片",
             tags: ["财富主升浪", "底部筑底", "潜龙在渊", "逆势翻盘"],
-            tpl: "📊 我的【人生K线图】分析结果：\n✨ 核心状态：#{tag}\n🚀 财富爆发期预计在 {year} 年开启！",
+            tpl: "📊 我的【人生K线图】：\n✨ 核心状态：#{tag}\n🚀 财富爆发期：{year}年！",
             analysis: [
                 { k: "大显身手", d: "运势如虹，适合主动出击。" },
                 { k: "厚积薄发", d: "稳步上升，多年耕耘见成效。" },
@@ -72,17 +84,17 @@
             ]
         },
         en: {
-            title: "Life Asset K-Line", btn: "Analyze My Life Cycle", instr: "💡 Tap bars to see year analysis",
-            yPlace: "Birth Year (YYYY)", copyBtn: "Copy Text", copyOk: "Copied!",
+            title: "Life Asset K-Line", btn: "Generate My Life Chart", instr: "💡 Tap bars for year analysis",
+            yPlace: "Year", mPlace: "Mon", dPlace: "Day", copyBtn: "Copy Text", saveBtn: "Save Image",
             tags: ["Bullish Surge", "Bottoming", "Rising Star", "Turning Point"],
-            tpl: "📊 My Life K-Line Analysis:\n✨ Status: #{tag}\n🚀 Peak Wealth Era: Year {year}!",
+            tpl: "📊 My Life K-Line:\n✨ Status: #{tag}\n🚀 Peak Era: Year {year}!",
             analysis: [
                 { k: "Great Success", d: "Luck is soaring, take action." },
                 { k: "Steady Growth", d: "Efforts finally paying off." },
                 { k: "Preparation", d: "Stay low and keep learning." },
                 { k: "Caution", d: "High volatility, stay defensive." },
                 { k: "Rebirth", d: "Market bottomed, turning point." },
-                { k: "Go with Flow", d: "Half the effort, twice result." }
+                { k: "Go with Flow", d: "Half effort, twice result." }
             ]
         }
     };
@@ -108,62 +120,65 @@
         mainBtn.innerText = i18n[currentLang].btn;
         document.getElementById('t-instr').innerText = i18n[currentLang].instr;
         document.getElementById('year').placeholder = i18n[currentLang].yPlace;
+        document.getElementById('month').placeholder = i18n[currentLang].mPlace;
+        document.getElementById('day').placeholder = i18n[currentLang].dPlace;
         document.getElementById('copy-btn').innerText = i18n[currentLang].copyBtn;
+        document.getElementById('save-btn').innerText = i18n[currentLang].saveBtn;
     });
 
     mainBtn.addEventListener('click', () => {
         const yVal = document.getElementById('year').value;
-        const mVal = document.getElementById('month').value || 1;
-        const dVal = document.getElementById('day').value || 1;
         if (!yVal) return;
         
         const birthYear = parseInt(yVal);
+        const mVal = document.getElementById('month').value || 1;
+        const dVal = document.getElementById('day').value || 1;
         const seedValue = birthYear + parseInt(mVal) * 31 + parseInt(dVal);
         const seededRandom = mulberry32(seedValue);
 
         const ctx = canvas.getContext('2d');
         const dpr = window.devicePixelRatio || 1;
-        canvas.width = canvas.offsetWidth * dpr;
-        canvas.height = canvas.offsetHeight * dpr;
+        // 关键：适配移动端的高清屏渲染
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
 
-        const w = canvas.offsetWidth;
-        const h = canvas.offsetHeight;
-        const pad = { top: 40, right: 30, bottom: 50, left: 60 };
+        const w = rect.width;
+        const h = rect.height;
+        const pad = { top: 40, right: 20, bottom: 40, left: 45 };
         const cW = w - pad.left - pad.right;
         const cH = h - pad.top - pad.bottom;
 
-        ctx.clearRect(0, 0, w, h);
-        cachedData = [];
+        // 绘制背景（为了导出图片时有背景颜色）
+        ctx.fillStyle = "#161a1e";
+        ctx.fillRect(0,0,w,h);
 
-        // 轴线
         ctx.strokeStyle = "#474d57";
         ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, h-pad.bottom); ctx.lineTo(w-pad.right, h-pad.bottom); ctx.stroke();
 
         let curY = cH * 0.7;
         let peakYear = birthYear;
         let highestH = Infinity;
+        cachedData = [];
 
-        for (let i = 0; i < 50; i++) {
-            const x = pad.left + i * (cW / 50) + (cW / 100);
+        for (let i = 0; i < 40; i++) {
+            const x = pad.left + i * (cW / 40) + (cW / 80);
             const move = Math.sin(seedValue * 0.1 + i * 0.5) * 20 + (seededRandom() - 0.5) * 40;
             const open = curY;
             const close = curY - move;
-            
             const drawO = Math.min(Math.max(open, 0), cH) + pad.top;
             const drawC = Math.min(Math.max(close, 0), cH) + pad.top;
-            const high = Math.min(drawO, drawC) - seededRandom() * 10;
-            const low = Math.max(drawO, drawC) + seededRandom() * 10;
+            const high = Math.min(drawO, drawC) - seededRandom() * 8;
+            const low = Math.max(drawO, drawC) + seededRandom() * 8;
 
-            // 存储解析所需的随机索引
             const analysisIdx = Math.floor(seededRandom() * i18n.zh.analysis.length);
-
             cachedData.push({ x, open: drawO, close: drawC, year: birthYear + i, aIdx: analysisIdx });
 
             const isUp = close < open;
             ctx.strokeStyle = ctx.fillStyle = isUp ? "#0ecb81" : "#f6465d";
             ctx.beginPath(); ctx.moveTo(x, high); ctx.lineTo(x, low); ctx.stroke();
-            const bW = Math.max((cW / 50) * 0.7, 2);
+            const bW = Math.max((cW / 40) * 0.6, 3);
             ctx.fillRect(x - bW/2, Math.min(drawO, drawC), bW, Math.abs(drawO - drawC) + 1);
 
             if (high < highestH) { highestH = high; peakYear = birthYear + i; }
@@ -171,17 +186,18 @@
 
             if ((birthYear + i) % 10 === 0) {
                 ctx.fillStyle = "#707a8a";
-                ctx.font = "11px Arial";
+                ctx.font = "10px Arial";
                 ctx.textAlign = "center";
-                ctx.fillText(birthYear + i, x, h - pad.bottom + 20);
+                ctx.fillText(birthYear + i, x, h - pad.bottom + 15);
             }
         }
         
         document.getElementById('shareText').innerText = i18n[currentLang].tpl.replace("{tag}", i18n[currentLang].tags[seedValue % 4]).replace("{year}", peakYear);
         document.getElementById('shareArea').style.display = 'block';
+        document.getElementById('action-btns').style.display = 'grid';
     });
 
-    // 点击交互解析逻辑
+    // 交互解析
     canvas.addEventListener('click', (e) => {
         if (cachedData.length === 0) return;
         const rect = canvas.getBoundingClientRect();
@@ -191,25 +207,28 @@
         if (Math.abs(closest.x - mouseX) < 15) {
             const baseO = cachedData[0].open;
             const change = (((baseO - closest.close) / baseO) * 100).toFixed(1);
-            const color = change >= 0 ? "var(--green)" : "var(--red)";
             const info = i18n[currentLang].analysis[closest.aIdx];
-
             tooltip.style.display = "block";
-            tooltip.style.left = (closest.x > rect.width - 150 ? closest.x - 170 : closest.x + 10) + "px";
-            tooltip.style.top = "60px";
-            tooltip.innerHTML = `
-                <div style="font-weight:bold; color:var(--gold); border-bottom:1px solid #444; padding-bottom:4px; margin-bottom:6px;">${closest.year}年 · ${info.k}</div>
-                <div style="font-size:12px; color:#fff;">${info.d}</div>
-                <div style="font-size:12px; margin-top:4px;">较起点变动: <span style="color:${color}">${change >= 0 ? '+':''}${change}%</span></div>
-            `;
+            tooltip.style.left = (closest.x > rect.width - 160 ? closest.x - 165 : closest.x + 10) + "px";
+            tooltip.style.top = "40px";
+            tooltip.innerHTML = `<b style="color:var(--gold)">${closest.year}年 · ${info.k}</b><br><span style="font-size:11px">${info.d}</span><br>变动: ${change >= 0 ? '+':''}${change}%`;
         } else { tooltip.style.display = "none"; }
     });
 
+    // 复制功能
     document.getElementById('copy-btn').addEventListener('click', () => {
         const el = document.createElement('textarea');
         el.value = document.getElementById('shareText').innerText;
         document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
         alert(i18n[currentLang].copyOk);
+    });
+
+    // 一键保存图片功能
+    document.getElementById('save-btn').addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = `Life_KLine_${new Date().getTime()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
     });
 })();
 </script>
