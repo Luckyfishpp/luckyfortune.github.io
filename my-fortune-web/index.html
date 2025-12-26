@@ -21,23 +21,11 @@
             margin: 0; padding: 15px; 
             display: flex; flex-direction: column; align-items: center; 
         }
-        
-        /* 容器适配优化 */
-        .container { 
-            width: 100%; max-width: 500px; 
-            box-sizing: border-box; 
-        }
-        
-        .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 20px; width: 100%;
-        }
+        .container { width: 100%; max-width: 500px; box-sizing: border-box; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; }
         .header h2 { font-size: 16px; color: var(--gold); margin: 0; letter-spacing: 2px; }
 
-        /* 输入框网格自适应 */
-        .input-grid { 
-            display: flex; gap: 8px; margin-bottom: 12px; 
-        }
+        .input-grid { display: flex; gap: 8px; margin-bottom: 12px; }
         input { 
             background: #1e2329; border: 1px solid var(--border); 
             color: white; padding: 12px; border-radius: 4px; 
@@ -51,7 +39,6 @@
             margin-bottom: 20px; transition: opacity 0.2s;
         }
 
-        /* 图表区：完全移除Y轴空间 */
         #canvasWrap { 
             width: 100%; height: 320px; 
             background: #0b0e11; border: 1px solid var(--border); 
@@ -65,24 +52,14 @@
             font-size: 12px; z-index: 100; pointer-events: none; width: 160px;
         }
 
-        /* 文案解析区：深度报告风格 */
         #shareArea { 
             display: none; margin-top: 20px; border: 1px solid var(--border); 
             padding: 20px; border-radius: 4px; background: #161a1e;
         }
-        #shareText { 
-            font-size: 13px; line-height: 1.8; color: var(--text-main); 
-            white-space: pre-wrap; 
-        }
+        #shareText { font-size: 13px; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; }
 
-        .action-grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
-            margin-top: 20px; display: none; 
-        }
-        .share-btn { 
-            background: #2b2f36; color: white; border: none; 
-            padding: 12px; font-size: 12px; border-radius: 4px; cursor: pointer; 
-        }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; }
+        .share-btn { background: #2b2f36; color: white; border: none; padding: 12px; font-size: 12px; border-radius: 4px; cursor: pointer; }
         .btn-gold { background: var(--gold); color: #000; font-weight: bold; }
 
         .lang-btn {
@@ -128,52 +105,87 @@
     let currentLang = 'en';
     let cachedData = [];
 
+    const advicePool = {
+        en: [
+            "Your golden era starts from {year}, prioritize aggressive expansion.",
+            "Focus on compounding assets rather than short-term gains.",
+            "Mid-term volatility expected, keep 30% liquidity ready.",
+            "A major trend reversal occurs in your 40s—stay adaptable.",
+            "Strategy: Buy the dips in personal growth, sell the hype in vanity.",
+            "Avoid high-leverage emotional decisions during low-tide years.",
+            "Wealth will flow through social networks; invest in high-value circles.",
+            "Defensive play is recommended between ages 35 and 42.",
+            "Focus on 'Infinite Games'—long-term skills outlast market luck.",
+            "Your peak energy aligns with {year}, perfect for career pivots.",
+            "Health is your hidden margin; don't trade it for marginal gains.",
+            "Identify your 'Personal Monopoly'—the skill only you can scale.",
+            "Volatility is not risk; it is the price of admission for growth.",
+            "Cut losses on toxic relationships as fast as a bad stock trade.",
+            "The best hedge against inflation is your own earning capacity.",
+            "Market noise is temporary; your core philosophy is permanent.",
+            "Diversify your identity so one failure doesn't bankrupt your soul.",
+            "Master the art of 'Deep Work' to stay ahead in an AI-driven era.",
+            "Every crisis in your chart is a discounted opportunity to reinvent.",
+            "Stay humble at the peaks; stay solvent at the troughs.",
+            "Time is the only asset that cannot be re-bought; spend it on high ROI tasks.",
+            "Learn to sell—whether a product or an idea, it's a foundational power.",
+            "Your network is your net worth; cultivate it with genuine value.",
+            "Optimization is for the small; Strategy is for the big.",
+            "Seek asymmetric bets where the downside is limited and upside is infinite.",
+            "Do not confuse luck with skill during a bull market phase.",
+            "The most expensive thing you can own is a closed mind.",
+            "Build systems, not just goals; systems produce repeatable success.",
+            "Retirement is a financial number, not a biological age.",
+            "Keep your overhead low and your curiosity high."
+        ],
+        zh: [
+            "你的黃金週期將在 {year} 年開啟，此時應全力出擊。",
+            "30歲前注重資產積累而非消費，利用時間複利完成原始積累。",
+            "警惕中年震盪期，建議保持 30% 的現金流以應對突發變動。",
+            "40歲左右將迎來關鍵的賽道切換點，保持學習力是核心競爭力。",
+            "投資策略：在低谷期投資自我，在高點期學會守成。",
+            "避免在情緒低潮期做出高槓桿的人生意義決策。",
+            "財富將通過社交槓桿放大，請務必投資高價值的人脈圈。",
+            "你的能量巔峰與 {year} 年重合，適合在此期間進行大膽轉型。",
+            "35-42歲之間建議採取防禦型策略，守住核心資產，減少激進冒險。",
+            "關注「無限遊戲」——長期技能的價值將遠超短期的市場運氣。",
+            "健康是你的隱形邊際成本，不要為了微小的增量收益而透支它。",
+            "尋找你的「個人壟斷」——建立那種只有你能大規模提供的價值。",
+            "波動不等於風險，它是獲得超額成長必須支付的門票。",
+            "果斷止損有害社交，就像在交易中迅速切斷虧損頭寸一樣重要。",
+            "對抗通膨的最佳對沖工具是你持續進化的賺錢能力。",
+            "市場噪音是暫時的，但你的底層價值邏輯應該是永久的。",
+            "將身份標籤多元化，這樣單一的失敗就不會導致靈魂破產。",
+            "在 AI 時代，深度工作的能力將成為你最稀缺的資產。",
+            "K 線中的每一次低谷，都是一次打折重塑自我的機會。",
+            "巔峰時保持謙卑，低谷時保持流動性（信心與現金）。",
+            "時間是唯一無法回購的資產，將其花在最高回報率的事情上。",
+            "學會「銷售」——無論是推銷產品還是理念，這是底層的權力。",
+            "你的圈子決定你的淨值，用真實的價值去澆灌人際網絡。",
+            "弱者忙於優化細節，強者專注於調整宏觀策略。",
+            "尋找不對稱機會：虧損有限但潛在收益無限的博弈。",
+            "在牛市週期中，千萬不要把運氣誤認為是自己的實力。",
+            "你擁有的最昂貴的東西是一個封閉的大腦。",
+            "建立系統而非僅僅盯著目標，系統能產生可重現的成功。",
+            "退休是一個財務數字，而不是一個生理年齡。",
+            "保持低成本的生活開支，以及高成本的好奇心。"
+        ]
+    };
+
     const i18n = {
         en: {
             yP: "Year", mP: "Mon", dP: "Day", btn: "GENERATE DESTINY REPORT",
-            change: "Change",
-            tags: ["BULL SURGE", "SILENT ACCUMULATION", "RISING STAR", "TREND REVERSAL"],
-            tpl: "📊 [DESTINY ANALYSIS REPORT]\n\n" +
-                 "✨ STATUS: {tag}\n" +
-                 "🚀 PEAK MOMENT: Year {year}\n" +
-                 "📈 TOTAL GROWTH: +{change}%\n\n" +
-                 "💡 ADVISORY:\n" +
-                 "1. Your golden era starts from {year}, prioritize aggressive expansion.\n" +
-                 "2. Focus on compounding assets rather than short-term gains.\n" +
-                 "3. Mid-term volatility expected, keep 30% liquidity ready.\n" +
-                 "4. A major trend reversal occurs in your 40s—stay adaptable.\n" +
-                 "5. Strategy: Buy the dips in personal growth, sell the hype in vanity.",
-            analysis: [
-                { k: "Overweight", d: "Luck is soaring. Perfect time for bold moves." },
-                { k: "Hold", d: "Steady compounding phase. Patience is key." },
-                { k: "Consolidate", d: "Energy gathering. Focus on skill acquisition." },
-                { k: "Risk Alert", d: "Market turbulence. Protect your core assets." },
-                { k: "Rebound", d: "The bottom is in. Expect a massive recovery." },
-                { k: "Breakout", d: "Resistance broken. Sky is the limit." }
-            ]
+            change: "Change", tags: ["BULL SURGE", "ACCUMULATION", "RISING STAR", "REVERSAL"],
+            reportTitle: "📊 [DESTINY ANALYSIS REPORT]",
+            labelStatus: "✨ STATUS", labelPeak: "🚀 PEAK MOMENT", labelGrowth: "📈 TOTAL POTENTIAL", labelAdv: "💡 ADVISORY",
+            analysis: [{ k: "Buy", d: "Luck is soaring." }, { k: "Hold", d: "Compounding phase." }, { k: "Consolidate", d: "Energy gathering." }, { k: "Risk", d: "Turbulence." }, { k: "Rebound", d: "Bottom is in." }, { k: "Breakout", d: "Sky is limit." }]
         },
         zh: {
             yP: "出生年", mP: "月", dP: "日", btn: "生成生命報告",
-            change: "累計增幅",
-            tags: ["資產主升浪", "底部潛伏期", "成長啟明星", "命運反轉點"],
-            tpl: "📊 【生命資產 K 線深度報告】\n\n" +
-                 "✨ 核心狀態：{tag}\n" +
-                 "🚀 財富巔峰：{year} 年左右\n" +
-                 "📈 累計潛能：+{change}%\n\n" +
-                 "💡 專家建議：\n" +
-                 "1. 你的黃金週期將在 {year} 年開啟，此時應全力出擊，不留遺憾。\n" +
-                 "2. 30歲前注重資產積累而非消費，利用時間複利完成原始積累。\n" +
-                 "3. 警惕中年震盪期，建議保持 30% 的現金流以應對突發變動。\n" +
-                 "4. 40歲左右將迎來關鍵的賽道切換點，保持學習力是核心競爭力。\n" +
-                 "5. 投資策略：在低谷期投資自我，在高點期學會守成。" ,
-            analysis: [
-                { k: "強力買入", d: "運勢如虹，此時不搏更待何時。" },
-                { k: "持倉不動", d: "穩步上升期，保持耐心等待複利開花。" },
-                { k: "區間震盪", d: "蓄勢階段，適合精進技能，觀察市場。" },
-                { k: "減倉避險", d: "高波動年份，注意保護本金，避免激進。" },
-                { k: "觸底反彈", d: "至暗時刻已過，黎明就在眼前。" },
-                { k: "向上突破", d: "打破瓶頸，人生進入全新階梯。" }
-            ]
+            change: "累計增幅", tags: ["資產主升浪", "底部潛伏期", "成長啟明星", "命運反轉點"],
+            reportTitle: "📊 【生命資產 K 線深度報告】",
+            labelStatus: "✨ 核心狀態", labelPeak: "🚀 財富巔峰", labelGrowth: "📈 累計潛能", labelAdv: "💡 專家建議",
+            analysis: [{ k: "強力買入", d: "運勢如虹。" }, { k: "持倉不動", d: "穩步上升。" }, { k: "區間震盪", d: "蓄勢階段。" }, { k: "減倉避險", d: "高波動年。" }, { k: "觸底反彈", d: "黎明將至。" }, { k: "向上突破", d: "人生躍遷。" }]
         }
     };
 
@@ -186,6 +198,16 @@
         }
     }
 
+    function getDynamicAdvice(seed, lang, year) {
+        const pool = [...advicePool[lang]];
+        let rand = mulberry32(seed);
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(rand() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+        return pool.slice(0, 6).map((txt, i) => `${i+1}. ${txt.replace("{year}", year)}`).join('\n');
+    }
+
     const canvas = document.getElementById('kCanvas');
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
@@ -193,27 +215,21 @@
     function draw() {
         const yVal = document.getElementById('year').value;
         if (!yVal) return;
-        
         const birthYear = parseInt(yVal);
-        const seed = birthYear + (parseInt(document.getElementById('month').value)||1)*31;
+        const seed = birthYear + (parseInt(document.getElementById('month').value)||1)*31 + (parseInt(document.getElementById('day').value)||1);
         const random = mulberry32(seed);
 
         const dpr = window.devicePixelRatio || 1;
         const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
 
         const w = rect.width, h = rect.height;
-        const pad = { top: 20, right: 10, bottom: 30, left: 10 }; // 极小边距
+        const pad = { top: 20, right: 10, bottom: 30, left: 10 };
         const cW = w - pad.left - pad.right, cH = h - pad.top - pad.bottom;
 
-        // 背景
         ctx.fillStyle = "#0b0e11"; ctx.fillRect(0,0,w,h);
-
-        // 纯净网格线 (无文字)
         ctx.strokeStyle = "#1e2329";
-        ctx.lineWidth = 1;
         for(let i=0; i<=4; i++) {
             let gy = pad.top + (cH/4)*i;
             ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
@@ -229,14 +245,11 @@
             const open = curY, close = curY - move;
             const dO = Math.min(Math.max(open, 0), cH) + pad.top;
             const dC = Math.min(Math.max(close, 0), cH) + pad.top;
-            
             cachedData.push({ x, open: dO, close: dC, year: birthYear + i, aIdx: Math.floor(random()*6) });
-
             const isUp = close < open;
             ctx.strokeStyle = ctx.fillStyle = isUp ? "#0ecb81" : "#f6465d";
             ctx.beginPath(); ctx.moveTo(x, dO-random()*10); ctx.lineTo(x, dC+random()*10); ctx.stroke();
             ctx.fillRect(x - (cW/40)*0.3, Math.min(dO, dC), (cW/40)*0.6, Math.abs(dO - dC) + 1);
-
             if ((birthYear + i) % 5 === 0) {
                 ctx.fillStyle = "#474d57"; ctx.font = "10px monospace"; ctx.textAlign = "center";
                 ctx.fillText(birthYear + i, x, h - 10);
@@ -247,10 +260,10 @@
 
         const baseO = cachedData[0].open;
         const totalChange = Math.abs((((baseO - cachedData[39].close)/baseO)*100).toFixed(1));
-        const tag = i18n[currentLang].tags[seed % 4];
-        const summary = i18n[currentLang].tpl.replace("{tag}", tag).replace(/{year}/g, peakYear).replace("{change}", totalChange);
+        const lang = i18n[currentLang];
+        const dynamicAdvice = getDynamicAdvice(seed, currentLang, peakYear);
         
-        document.getElementById('shareText').innerText = summary;
+        document.getElementById('shareText').innerText = `${lang.reportTitle}\n\n${lang.labelStatus}: ${lang.tags[seed % 4]}\n${lang.labelPeak}: ${peakYear}\n${lang.labelGrowth}: +${totalChange}%\n\n${lang.labelAdv}:\n${dynamicAdvice}`;
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
     }
@@ -271,22 +284,20 @@
 
     document.getElementById('lang-btn').addEventListener('click', () => {
         currentLang = currentLang === 'en' ? 'zh' : 'en';
-        document.getElementById('main-btn').innerText = i18n[currentLang].btn;
-        document.getElementById('year').placeholder = i18n[currentLang].yP;
-        document.getElementById('month').placeholder = i18n[currentLang].mP;
-        document.getElementById('day').placeholder = i18n[currentLang].dP;
-        draw();
+        const L = i18n[currentLang];
+        document.getElementById('main-btn').innerText = L.btn;
+        document.getElementById('year').placeholder = L.yP;
+        document.getElementById('month').placeholder = L.mP;
+        document.getElementById('day').placeholder = L.dP;
+        if(cachedData.length) draw();
     });
 
     document.getElementById('main-btn').addEventListener('click', draw);
     document.getElementById('save-btn').addEventListener('click', () => {
-        const link = document.createElement('a');
-        link.download = `LifeChart_Pro.png`;
-        link.href = canvas.toDataURL(); link.click();
+        const link = document.createElement('a'); link.download = `LifeChart.png`; link.href = canvas.toDataURL(); link.click();
     });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(document.getElementById('shareText').innerText);
-        alert("Report Copied!");
+        navigator.clipboard.writeText(document.getElementById('shareText').innerText); alert("Report Copied!");
     });
     document.getElementById('x-btn').addEventListener('click', () => {
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(document.getElementById('shareText').innerText)}`);
