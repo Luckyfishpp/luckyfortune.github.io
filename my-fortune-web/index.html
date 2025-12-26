@@ -1,57 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life K-Line</title>
+    <title>Life K-Line | 人生资产K线图</title>
     <style>
-        body { background-color: #0b0e11 !important; color: white; margin: 0; padding: 20px; font-family: sans-serif; }
-        .container { max-width: 600px; margin: 0 auto; display: block !important; } /* 強制顯示 */
-        .input-group { margin-bottom: 20px; background: #1e2329; padding: 15px; border-radius: 10px; }
-        input { width: 80px; padding: 10px; margin: 5px; border: 1px solid #f0b90b; background: #0b0e11; color: white; border-radius: 5px; }
-        button { padding: 10px 20px; background: #f0b90b; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        #chart { width: 100%; height: 400px; background: #1e2329; margin-top: 20px; border-radius: 10px; }
+        :root {
+            --gold: #f0b90b;
+            --bg: #0b0e11;
+            --card: #1e2329;
+            --text: #eaecef;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'PingFang SC', -apple-system, sans-serif;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 20px 0;
+        }
+        .lang-btn {
+            background: none;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        input {
+            background: var(--bg);
+            border: 1px solid #474d57;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .main-btn {
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #chart { width: 100%; height: 400px; margin-top: 20px; background: #161a1e; border-radius: 8px;}
+        #shareArea { display: none; margin-top: 20px; }
+        .share-card {
+            background: #2b3139;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--gold);
+        }
+        .copy-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .tips { font-size: 11px; color: #707a8a; margin-top: 20px; text-align: center; }
     </style>
 </head>
 <body>
+
+    <div class="header">
+        <h1 id="t-title" style="color:var(--gold); font-size: 22px; margin:0;">人生K线图</h1>
+        <button class="lang-btn" onclick="toggleLang()" id="t-lang">English</button>
+    </div>
+
     <div class="container">
-        <h2 style="color: #f0b90b;">Life K-Line / 人生K線</h2>
-        <div class="input-group">
-            <input type="number" id="year" placeholder="Year">
-            <input type="number" id="month" placeholder="Month">
-            <input type="number" id="day" placeholder="Day">
-            <button onclick="generate()">Generate / 生成</button>
+        <div class="input-grid">
+            <input type="number" id="year" placeholder="年份">
+            <input type="number" id="month" placeholder="月(选)">
+            <input type="number" id="day" placeholder="日(选)">
         </div>
+        <button class="main-btn" onclick="generate()" id="t-btn">生成我的生命周期表</button>
+        
         <div id="chart"></div>
+
+        <div id="shareArea">
+            <div class="share-card">
+                <div id="shareText" style="font-size:14px; line-height:1.6; white-space:pre-wrap;"></div>
+                <button class="copy-btn" onclick="copyText()" id="t-copyBtn">复制分享文案</button>
+            </div>
+        </div>
+
+        <p class="tips" id="t-disclaimer">* 基于流年算法模拟，不构成建议</p>
     </div>
 
     <script src="https://lib.baomitu.com/echarts/5.4.3/echarts.min.js"></script>
     <script>
-        function generate() {
-            const y = document.getElementById('year').value;
-            if(!y) return alert("Please enter year");
-            
-            // 初始化圖表
-            var myChart = echarts.init(document.getElementById('chart'), 'dark');
-            var data = [];
-            var xData = [];
-            var base = 50;
-
-            for (var i = 0; i < 50; i++) {
-                xData.push(parseInt(y) + i);
-                var open = base + Math.random() * 10 - 5;
-                var close = open + Math.random() * 10 - 5;
-                data.push([open, close, open-2, close+2]);
-                base = close;
+        let currentLang = 'zh';
+        const i18n = {
+            zh: {
+                title: "人生K线图", btn: "生成我的生命周期表", lang: "English",
+                placeholderY: "年份", placeholderM: "月(选)", placeholderD: "日(选)",
+                disclaimer: "* 基于流年算法模拟，不构成建议", copyBtn: "复制分享文案",
+                copySuccess: "复制成功！去分享给好友吧",
+                tags: ["主升浪", "底部筑底", "财富觉醒", "潜龙在渊", "逆势反转"],
+                tpl: "📊 我的【人生K线图】亮了！\n✨ 核心状态：#{tag}\n🚀 财富主升浪预计在 {year} 年开启！\n🔗 测测你的未来："
+            },
+            en: {
+                title: "Life K-Line", btn: "Generate My Chart", lang: "中文",
+                placeholderY: "Year", placeholderM: "Mon(Opt)", placeholderD: "Day(Opt)",
+                disclaimer: "* Algorithmic simulation, not financial advice.",
+                copyBtn: "Copy Share Text", copySuccess: "Copied!",
+                tags: ["Bull Market", "Bottoming", "Wealth Awakening", "Recovery", "Ready to Fly"],
+                tpl: "📊 My Life K-Line Analysis!\n✨ Status: #{tag}\n🚀 Bull market expected in {year}!\n🔗 Link: "
             }
+        };
 
-            myChart.setOption({
-                backgroundColor: 'transparent',
-                xAxis: { data: xData },
-                yAxis: { scale: true },
-                series: [{ type: 'candlestick', data: data }]
-            });
-        }
-    </script>
-</body>
-</html>
+        function toggleLang() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            document.getElementById('t-title').innerText = i18n[currentLang].title;
+            document.getElementById('t-btn').innerText = i18n[currentLang].btn;
+            document.getElementById('t-lang').innerText = i18n[currentLang].lang;
+            document.getElementById('year').placeholder = i18n[currentLang].placeholderY;
+            document.getElementById('month').placeholder = i18n[currentLang].placeholderM;
+            document.getElementById('day').placeholder = i18n[currentLang].placeholderD;
+            document.getElementById('t-disclaimer
