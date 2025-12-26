@@ -1,113 +1,57 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life K-Line | 人生资产K线图</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <title>Life K-Line</title>
     <style>
-        :root {
-            --gold: #f0b90b;
-            --bg: #0b0e11;
-            --card: #1e2329;
-            --text: #eaecef;
-            --green: #0ecb81;
-            --red: #f6465d;
+        body { background-color: #0b0e11 !important; color: white; margin: 0; padding: 20px; font-family: sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; display: block !important; } /* 強制顯示 */
+        .input-group { margin-bottom: 20px; background: #1e2329; padding: 15px; border-radius: 10px; }
+        input { width: 80px; padding: 10px; margin: 5px; border: 1px solid #f0b90b; background: #0b0e11; color: white; border-radius: 5px; }
+        button { padding: 10px 20px; background: #f0b90b; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        #chart { width: 100%; height: 400px; background: #1e2329; margin-top: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: #f0b90b;">Life K-Line / 人生K線</h2>
+        <div class="input-group">
+            <input type="number" id="year" placeholder="Year">
+            <input type="number" id="month" placeholder="Month">
+            <input type="number" id="day" placeholder="Day">
+            <button onclick="generate()">Generate / 生成</button>
+        </div>
+        <div id="chart"></div>
+    </div>
+
+    <script src="https://lib.baomitu.com/echarts/5.4.3/echarts.min.js"></script>
+    <script>
+        function generate() {
+            const y = document.getElementById('year').value;
+            if(!y) return alert("Please enter year");
+            
+            // 初始化圖表
+            var myChart = echarts.init(document.getElementById('chart'), 'dark');
+            var data = [];
+            var xData = [];
+            var base = 50;
+
+            for (var i = 0; i < 50; i++) {
+                xData.push(parseInt(y) + i);
+                var open = base + Math.random() * 10 - 5;
+                var close = open + Math.random() * 10 - 5;
+                data.push([open, close, open-2, close+2]);
+                base = close;
+            }
+
+            myChart.setOption({
+                backgroundColor: 'transparent',
+                xAxis: { data: xData },
+                yAxis: { scale: true },
+                series: [{ type: 'candlestick', data: data }]
+            });
         }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'PingFang SC', -apple-system, sans-serif;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .header {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0 20px 0;
-        }
-        .lang-btn {
-            background: none;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-        h1 { color: var(--gold); margin: 0; font-size: 24px; }
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        input {
-            background: var(--bg);
-            border: 1px solid #474d57;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        input:focus { border-color: var(--gold); }
-        .main-btn {
-            width: 100%;
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .main-btn:active { opacity: 0.8; }
-        #chart { width: 100%; height: 400px; margin-top: 20px; }
-        #shareArea { display: none; margin-top: 20px; }
-        .share-card {
-            background: #2b3139;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px dashed var(--gold);
-        }
-        #shareText {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 12px;
-            white-space: pre-wrap;
-        }
-        .copy-btn {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .tips {
-            font-size: 11px;
-            color: #707a
+    </script>
+</body>
+</html>
