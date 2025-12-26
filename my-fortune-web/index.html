@@ -3,121 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>人生K线图 - 财富趋势分析</title>
+    <title>Life K-Line | 人生资产K线图</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-        body { background-color: #0d1117; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 800px; width: 100%; text-align: center; }
-        h1 { color: #f0b90b; margin-bottom: 10px; }
-        .input-group { margin: 20px 0; background: #1c2128; padding: 20px; border-radius: 12px; border: 1px solid #30363d; }
-        input { padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; margin-right: 10px; }
-        button { padding: 10px 20px; background: #f0b90b; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        #chart { width: 100%; height: 500px; margin-top: 20px; background: #1c2128; border-radius: 12px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>人生K线图 <sup>Beta</sup></h1>
-        <p style="color: #8b949e;">基于星历算法的可视化运势分析站</p>
-        
-        <div class="input-group">
-            <input type="number" id="birthYear" placeholder="出生年份 (例: 1995)" min="1900" max="2025">
-            <button onclick="generateChart()">生成我的K线</button>
-        </div>
-
-        <div id="chart"></div>
-        <p style="font-size: 12px; color: #484f58; margin-top: 20px;">* 免责声明：本工具基于娱乐算法，不构成投资建议。</p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
-<script>
-function generateChart() {
-    const yearInput = document.getElementById('birthYear').value;
-    if (!yearInput || yearInput < 1900 || yearInput > 2025) return alert('請輸入有效的出生年份');
-
-    const chartDom = document.getElementById('chart');
-    const myChart = echarts.init(chartDom, 'dark');
-    
-    // 1. 初始化命理數據
-    const birthYear = parseInt(yearInput);
-    const data = [];
-    const years = [];
-    
-    // 獲取用戶生肖（簡單邏輯基準）
-    const zodiacs = ["鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"];
-    const userZodiac = zodiacs[(birthYear - 4) % 12];
-    
-    let baseScore = 60; // 初始能量值
-
-    // 2. 模擬未來 50 年的流年走勢
-    for (let i = 0; i < 50; i++) {
-        let currentYear = birthYear + i;
-        years.push(currentYear + '年');
-        
-        // 獲取流年干支能量
-        const lunar = Lunar.fromDate(new Date(currentYear, 0, 1));
-        const ganZhi = lunar.getYearInGanZhi(); // 例如 "甲辰"
-        
-        // --- 核心偽算法：根據干支與生肖的關係定漲跌 ---
-        let trend = 0;
-        
-        // 簡單邏輯：如果是本命年，震盪（洗盤）
-        if (currentYear % 12 === birthYear % 12) {
-            trend = (Math.random() - 0.5) * 10; 
-        } 
-        // 簡單邏輯：合則漲，沖則跌 (這裡使用隨機種子模擬固定的運勢軌跡)
-        else {
-            const seed = (currentYear * birthYear) % 100;
-            trend = (seed > 50 ? 1 : -1) * (seed % 15);
+        :root {
+            --gold: #f0b90b;
+            --bg: #0b0e11;
+            --card: #1e2329;
+            --text: #eaecef;
+            --green: #0ecb81;
+            --red: #f6465d;
         }
-
-        let open = baseScore;
-        let close = baseScore + trend + (Math.random() * 4 - 2);
-        let low = Math.min(open, close) - Math.random() * 5;
-        let high = Math.max(open, close) + Math.random() * 8;
-
-        data.push([
-            parseFloat(open.toFixed(2)), 
-            parseFloat(close.toFixed(2)), 
-            parseFloat(low.toFixed(2)), 
-            parseFloat(high.toFixed(2))
-        ]);
-        
-        baseScore = close; // 下一年承接前一年的收盤
-    }
-
-    const option = {
-        backgroundColor: 'transparent',
-        title: { text: userZodiac + '年出生者 - 人生資產K線圖', left: 'center', textStyle: {color: '#f0b90b'} },
-        tooltip: { 
-            trigger: 'axis', 
-            axisPointer: { type: 'cross' },
-            formatter: function(params) {
-                let p = params[0];
-                return p.name + '<br/>' +
-                       '起始能量: ' + p.data[1] + '<br/>' +
-                       '結尾能量: ' + p.data[2] + '<br/>' +
-                       '最低谷值: ' + p.data[3] + '<br/>' +
-                       '巔峰能量: ' + p.data[4];
-            }
-        },
-        grid: { left: '10%', right: '10%', bottom: '15%' },
-        xAxis: { type: 'category', data: years, axisLine: { lineStyle: { color: '#484f58' } } },
-        yAxis: { scale: true, splitLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false } },
-        dataZoom: [{ type: 'inside', start: 0, end: 100 }, { show: true, type: 'slider', top: '90%' }],
-        series: [{
-            name: '運势K線',
-            type: 'candlestick',
-            data: data,
-            itemStyle: {
-                color: '#ef232a', color0: '#14b143',
-                borderColor: '#ef232a', borderColor0: '#14b143'
-            }
-        }]
-    };
-
-    myChart.setOption(option);
-}
-</script>
-</body>
-</html>
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'PingFang SC', -apple-system, sans-serif;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 20px 0;
+        }
+        .lang-btn {
+            background: none;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        h1 { color: var(--gold); margin: 0; font-size: 24px; }
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        input {
+            background: var(--bg);
+            border: 1px solid #474d57;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus { border-color: var(--gold); }
+        .main-btn {
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .main-btn:active { opacity: 0.8; }
+        #chart { width: 100%; height: 400px; margin-top: 20px; }
+        #shareArea { display: none; margin-top: 20px; }
+        .share-card {
+            background: #2b3139;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--gold);
+        }
+        #shareText {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+        }
+        .copy-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .tips {
+            font-size: 11px;
+            color: #707a
