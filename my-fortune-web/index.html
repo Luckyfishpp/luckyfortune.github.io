@@ -11,42 +11,28 @@
         }
         body { background: var(--bg); color: var(--text-main); font-family: -apple-system, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
-        
-        /* 廣告容器樣式 */
         .ad-slot { width: 100%; margin: 10px 0; background: #0d1117; border-radius: 4px; overflow: hidden; min-height: 60px; text-align: center; display: flex; justify-content: center; align-items: center; }
-        
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
         .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; }
         .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; }
-
         .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
         .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
         .stat-value { font-size: 13px; color: var(--gold); font-weight: bold; }
-
         .input-grid { display: flex; gap: 10px; margin-bottom: 15px; }
         input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center; outline: none; }
-
-        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        #main-btn:active { opacity: 0.8; }
-
-        /* K線圖區域 */
+        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; }
         #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
         #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.95); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 1001; pointer-events: none; color: white; }
-
-        /* 報告區域 */
         #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 25px; border-radius: 6px; background: #161a1e; border-left: 6px solid var(--gold); }
         #shareText { font-size: 14px; line-height: 1.9; color: var(--text-main); white-space: pre-wrap; }
-
         .action-grid { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; width: 100%; }
         .share-btn { padding: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; text-align: center; }
         .btn-gold { background: var(--gold); color: #000; }
         .btn-dark { background: #2b2f36; color: #fff; }
-
         footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; }
         .p-link { text-decoration: underline; cursor: pointer; }
-        
         #p-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-height: 70%; background: #1e2329; border: 1px solid var(--gold); padding: 20px; z-index: 3000; border-radius: 8px; overflow-y: auto; color: #eaecef; box-shadow: 0 0 40px #000; }
     </style>
 </head>
@@ -74,7 +60,7 @@
             <input type="number" id="day" placeholder="DD">
         </div>
 
-        <button id="main-btn">解碼交易天命</button>
+        <button id="main-btn">解碼交易天命數據流</button>
         
         <div id="canvasWrap">
             <div id="tooltip"></div>
@@ -94,8 +80,8 @@
         </div>
 
         <div class="action-grid" id="action-grid">
-            <button class="share-btn btn-gold" id="save-btn">📸 保存截圖</button>
-            <button class="share-btn btn-dark" id="copy-btn">📋 複製研報</button>
+            <button class="share-btn btn-gold" id="save-btn">📸 保存帶水印截圖</button>
+            <button class="share-btn btn-dark" id="copy-btn">📋 複製專家研報</button>
         </div>
 
         <footer>
@@ -126,20 +112,40 @@
             y: "年", m: "月", d: "日", btn: "解碼交易天命數據流",
             save: "📸 保存截圖", copy: "📋 複製研報",
             disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。",
-            modal: "<b>隱私政策:</b> 我們使用 A-Ads 及 Adsterra 廣告網絡。您的數據僅在本地處理，我們不存儲任何資訊。",
+            privacy: "隱私政策與條款",
+            modal: "<b>隱私政策:</b> 我們使用 A-Ads 及 Adsterra 廣告網絡。數據僅在本地處理，我們不存儲個人資訊。",
             water: "Life K-Line Pro | 交易天命",
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
-            na: ["金命", "水命", "火命", "土命", "木命"]
+            na: ["金命", "水命", "火命", "土命", "木命"],
+            matrix: {
+                intro: ["格局為「{star}」，資產模型呈現典型的「{type}」。", "本命{gz}，納音{na}。天盤現「{sign}」之兆，穿透週期能力強。"],
+                peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，此為資產溢價最高窗口。"],
+                risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，建議採取防禦配置。"],
+                advice: ["策略：{advice}"]
+            },
+            types: ["脈衝式成長", "螺旋式上升", "階梯式躍遷", "指數級爆發"],
+            signs: ["雙祿交流", "魁鉞夾命", "日月並明", "三奇加會"],
+            advices: ["知命而不信命，利用K線規律進行博弈。", "情緒是交易的大敵，保持冷靜的盤感。", "在他人恐懼時貪婪，在他人貪婪時恐懼。"]
         },
         en: {
             title: "LIFE K-LINE PRO", l1: "PILLAR", l2: "STAR", l3: "ELEMENT",
             y: "YYYY", m: "MM", d: "DD", btn: "DECODE DESTINY DATA",
             save: "📸 SAVE IMAGE", copy: "📋 COPY REPORT",
             disclaim: "For entertainment only. Trading involves risk.",
-            modal: "<b>Privacy Policy:</b> We use A-Ads and Adsterra networks. Your data is processed locally and NOT stored.",
+            privacy: "Privacy Policy & Terms",
+            modal: "<b>Privacy Policy:</b> We use A-Ads and Adsterra. Data is processed locally and NOT stored.",
             water: "Life K-Line Pro | Trading Destiny",
             stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
-            na: ["Metal", "Water", "Fire", "Earth", "Wood"]
+            na: ["Metal", "Water", "Fire", "Earth", "Wood"],
+            matrix: {
+                intro: ["Structure is {star}. Typical {type} model.", "Born in {gz} year, {na} element. {sign} pattern detected."],
+                peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align."],
+                risk: ["Caution for drawdown in <span class='highlight'>{year}</span>. Protect capital."],
+                advice: ["Strategy: {advice}"]
+            },
+            types: ["Impulse Growth", "Spiral Ascent", "Step Transition", "Exponential Blast"],
+            signs: ["Double Wealth", "Elite Alignment", "Sun-Moon Harmony", "Triple Fortune"],
+            advices: ["Master destiny using K-line laws.", "Control emotions for better trade sense.", "Be greedy when others are fearful."]
         }
     };
 
@@ -165,8 +171,7 @@
         if (canvas.width !== Math.floor(rect.width * dpr)) {
             canvas.width = Math.floor(rect.width * dpr);
             canvas.height = Math.floor(rect.height * dpr);
-            ctx.setTransform(1, 0, 0, 1, 0, 0); 
-            ctx.scale(dpr, dpr);
+            ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
         }
     }
 
@@ -177,7 +182,7 @@
         const y = parseInt(document.getElementById('year').value);
         const m = parseInt(document.getElementById('month').value);
         const d = parseInt(document.getElementById('day').value);
-        if (!y || !m || !d) { alert("Please enter Date"); return; }
+        if (!y || !m || !d) { alert(curLang==='zh'?"請輸入完整日期":"Full date required"); return; }
 
         initCanvas();
         const w = canvas.getBoundingClientRect().width, h = canvas.getBoundingClientRect().height;
@@ -193,25 +198,31 @@
         document.getElementById('val-na').innerText = na;
 
         let curY = h * 0.6; kData = [];
-        let maxYear = y;
+        let maxYear = y, minYear = y;
+        let maxVal = 999, minVal = -999;
+
         for (let i = 0; i < 50; i++) {
             const cy = y + i;
-            const r = (Math.abs(Math.sin(cy * 1.6 + m + d + i)) * 1000) % 1;
-            const open = curY, close = curY - (r - 0.5) * 50;
+            const seed = Math.abs(Math.sin(cy * 1.6 + m + d + i));
+            const open = curY, close = curY - (seed - 0.5) * 55;
             const x = 40 + i * ((w-70)/50);
             kData.push({ x, open, close, year: cy, change: ((open-close)/open*100).toFixed(2) });
             ctx.strokeStyle = ctx.fillStyle = close < open ? "#0ecb81" : "#f6465d";
             ctx.beginPath(); ctx.moveTo(x, open); ctx.lineTo(x, close); ctx.lineWidth = 2; ctx.stroke();
             if (i % 10 === 0) { ctx.fillStyle = "#474d57"; ctx.font = "10px monospace"; ctx.fillText(cy, x-12, h-10); }
             curY = close;
-            if (close < (kData[maxYear-y]?.close || 999)) maxYear = cy;
+            if (close < maxVal) { maxVal = close; maxYear = cy; }
+            if (close > minVal) { minVal = close; minYear = cy; }
         }
 
-        const report = curLang === 'zh' ? 
-            `📊 【天命研報】\n\n✨ 格局：${gz} / ${star} / ${na}\n\n1️⃣ 財富呈脈衝式成長。\n2️⃣ 巔峰年份：${maxYear} 年。\n3️⃣ 建議：利用波動，順勢而為。` :
-            `📊 [DESTINY REPORT]\n\n✨ Pillar: ${gz} / ${star} / ${na}\n\n1️⃣ Growth Model: Pulsed.\n2️⃣ Peak Year: ${maxYear}.\n3️⃣ Advice: Trade with the trend.`;
-        
-        document.getElementById('shareText').innerText = report;
+        const t = i18n[curLang];
+        const pick = (arr, seed) => arr[seed % arr.length];
+        const r1 = pick(t.matrix.intro, y+m).replace("{star}", star).replace("{type}", pick(t.types, d)).replace("{na}", na).replace("{gz}", gz).replace("{sign}", pick(t.signs, y));
+        const r2 = pick(t.matrix.peak, y).replace("{year}", maxYear);
+        const r3 = pick(t.matrix.risk, m).replace("{year}", minYear);
+        const r4 = pick(t.matrix.advice, d).replace("{advice}", pick(t.advices, y+m+d));
+
+        document.getElementById('shareText').innerHTML = `📊 ${curLang==='zh'?'【天命研報】':'[REPORT]'}\n\n✨ ${gz} / ${star} / ${na}\n\n1️⃣ ${r1}\n2️⃣ ${r2}\n3️⃣ ${r3}\n4️⃣ ${r4}`;
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
     }
@@ -229,7 +240,10 @@
 
     document.getElementById('main-btn').addEventListener('click', draw);
     document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'zh' ? 'en' : 'zh'; updateUI(); if(kData.length) draw(); });
-    document.getElementById('copy-btn').addEventListener('click', () => { navigator.clipboard.writeText(document.getElementById('shareText').innerText).then(() => alert("Copied!")); });
+    document.getElementById('copy-btn').addEventListener('click', () => { 
+        const txt = document.getElementById('shareArea').innerText;
+        navigator.clipboard.writeText(txt).then(() => alert(curLang==='zh'?"研報已複製":"Report Copied")); 
+    });
     document.getElementById('save-btn').addEventListener('click', () => {
         const temp = document.createElement('canvas'); const tCtx = temp.getContext('2d');
         temp.width = canvas.width; temp.height = canvas.height;
@@ -238,7 +252,6 @@
         tCtx.fillText(i18n[curLang].water, temp.width - 20, temp.height - 40);
         const a = document.createElement('a'); a.download = `Life_KLine.png`; a.href = temp.toDataURL(); a.click();
     });
-
     window.toggleP = (show) => { document.getElementById('p-modal').style.display = show ? 'block' : 'none'; };
     updateUI();
 })();
