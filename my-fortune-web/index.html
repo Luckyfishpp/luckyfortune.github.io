@@ -4,60 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life K-Line Pro | 天命金線交易終端</title>
-    
-    <meta name="description" content="專業級人生 K 線分析終端。解碼您的財富週期與交易天命。">
-    
     <style>
         :root { 
             --gold: #f0b90b; --bg: #0b0e11; --card: #161a1e; --border: #2b2f36;
             --text-main: #eaecef; --text-dim: #848e9c; --green: #0ecb81; --red: #f6465d; 
         }
-        body { background: var(--bg); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        body { background: var(--bg); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* A-Ads 容器 */
+        /* Ad Slots */
         .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; overflow: hidden; min-height: 60px; text-align: center; }
         .ad-wrapper iframe { border: 0; padding: 0; width: 100%; height: 60px; display: block; margin: auto; }
 
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
-        .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; letter-spacing: 1px; }
+        .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; }
         .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; }
 
         .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
         .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
-        .stat-value { font-size: 14px; color: var(--gold); font-weight: bold; }
+        .stat-value { font-size: 13px; color: var(--gold); font-weight: bold; }
 
         .input-grid { display: flex; gap: 10px; margin-bottom: 15px; }
         input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center; outline: none; }
-        input:focus { border-color: var(--gold); }
 
         #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; }
 
-        /* K線區域 */
-        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 6px; margin-top: 15px; overflow: hidden; }
+        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
         #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.95); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 1001; pointer-events: none; color: white; }
 
-        /* 分析報告區域 */
         #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 25px; border-radius: 6px; background: #161a1e; border-left: 6px solid var(--gold); }
         #shareText { font-size: 14px; line-height: 1.9; color: var(--text-main); white-space: pre-wrap; }
-        .highlight { color: var(--gold); font-weight: bold; }
 
         .action-grid { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; width: 100%; }
-        .share-btn { padding: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 13px; text-align: center; }
+        .share-btn { padding: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; }
         .btn-gold { background: var(--gold); color: #000; }
         .btn-dark { background: #2b2f36; color: #fff; }
 
-        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; line-height: 1.8; }
+        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; }
+        .privacy-link { text-decoration: underline; cursor: pointer; margin-top: 8px; display: inline-block; }
+
+        /* Privacy Modal */
+        #p-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-height: 70%; background: #1e2329; border: 1px solid var(--gold); padding: 20px; z-index: 3000; border-radius: 8px; overflow-y: auto; color: #eaecef; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="ad-wrapper">
-            <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive'></iframe>
-        </div>
+        <div class="ad-wrapper"><iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive'></iframe></div>
 
         <div class="header">
             <h2 id="t-title">LIFE K-LINE PRO</h2>
@@ -65,9 +60,9 @@
         </div>
 
         <div class="dashboard">
-            <div class="stat-box"><div class="stat-label">格局</div><div class="stat-value" id="val-gz">--</div></div>
-            <div class="stat-box"><div class="stat-label">主星</div><div class="stat-value" id="val-star">--</div></div>
-            <div class="stat-box"><div class="stat-label">五行</div><div class="stat-value" id="val-na">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l1">格局</div><div class="stat-value" id="val-gz">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l2">主星</div><div class="stat-value" id="val-star">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l3">五行</div><div class="stat-value" id="val-na">--</div></div>
         </div>
 
         <div class="input-grid">
@@ -96,9 +91,15 @@
         </div>
 
         <footer>
-            <p>本系統基於算法模擬，數據僅供參考。交易有風險，投資需謹慎。</p>
+            <p id="t-disclaim">本系統僅供娛樂參考，交易有風險，投資需謹慎。</p>
             <p>© 2025 LuckyFortune Terminal</p>
+            <span class="privacy-link" id="t-privacy" onclick="toggleModal(true)">Privacy Policy</span>
         </footer>
+    </div>
+
+    <div id="p-modal">
+        <div style="text-align:right; cursor:pointer; color:var(--gold)" onclick="toggleModal(false)">[CLOSE]</div>
+        <div id="p-content" style="font-size:12px; line-height:1.6; margin-top:10px;"></div>
     </div>
 
 <script>
@@ -112,27 +113,62 @@
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
 
-    const uiLang = {
-        zh: { btn: "解碼天命數據流", water: "Life K-Line Pro | 交易天命" },
-        en: { btn: "DECODE DESTINY", water: "Life K-Line Pro | Trading Destiny" }
+    const i18n = {
+        zh: {
+            title: "LIFE K-LINE PRO", l1: "格局", l2: "主星", l3: "五行",
+            y: "YYYY", m: "MM", d: "DD", btn: "解碼交易天命數據流",
+            save: "📸 保存帶水印截圖", copy: "📋 複製專家研報",
+            disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。",
+            privacy: "隱私政策與條款",
+            modal: "<b>隱私政策:</b> 我們使用 A-Ads 等第三方廣告公司投放廣告。您的出生數據僅在瀏覽器本地處理，我們不會存儲您的任何個人資訊。",
+            water: "Life K-Line Pro | 交易天命",
+            alertCopy: "研報已複製！", alertInput: "請完整輸入年月日"
+        },
+        en: {
+            title: "LIFE K-LINE PRO", l1: "PILLAR", l2: "STAR", l3: "ELEMENT",
+            y: "YYYY", m: "MM", d: "DD", btn: "DECODE DESTINY DATA",
+            save: "📸 SAVE SCREENSHOT", copy: "📋 COPY REPORT",
+            disclaim: "For entertainment only. Trading involves risk.",
+            privacy: "Privacy Policy & Terms",
+            modal: "<b>Privacy Policy:</b> We use third-party ad networks like A-Ads. Your data is processed locally and NOT stored on our servers.",
+            water: "Life K-Line Pro | Trading Destiny",
+            alertCopy: "Report Copied!", alertInput: "Please enter full Date"
+        }
     };
 
     const matrix = {
         zh: {
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
-            intro: ["格局為「{star}」，資產模型呈現典型的「脈衝式成長」。", "本命{gz}，納音{na}。天盤現「雙祿交流」之兆，穿透週期能力強。", "身入{star}之境，帶有「殺破狼」變革基因，適合捕捉波動機會。"],
-            peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，資產溢價最高窗口。", "數據流顯示 <span class='highlight'>{year}年</span> 逢天魁加持，社會槓桿達到最大化。"],
-            risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，建議採取防禦配置。", "注意 <span class='highlight'>{year}年</span> 築底震盪，這是對心理素質的考驗。"],
-            advice: ["策略：知命而不信命，利用K線規律進行博弈。", "心法：財富是認知的變現。在低谷期修煉，在高峰期收穫。"]
+            intro: ["格局為「{star}」，資產模型呈現典型的「脈衝式成長」。", "本命{gz}，納音{na}。天盤現「雙祿交流」之兆，穿透週期能力強。"],
+            peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，資產溢價最高窗口。"],
+            risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，建議採取防禦配置。"],
+            advice: ["策略：知命而不信命，利用K線規律進行博弈。"]
         },
         en: {
             stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
-            intro: ["Structure is {star}. Typical Step-growth model.", "Enter {star} state. Possesses aggressive genes."],
-            peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align.", "Data indicates <span class='highlight'>{year}</span> has noble support."],
-            risk: ["Caution for drawdown in <span class='highlight'>{year}</span>.", "Correction expected in <span class='highlight'>{year}</span>."],
-            advice: ["Strategy: Use K-line laws for asymmetric bets.", "Mindset: Wealth is converted knowledge."]
+            intro: ["Structure is {star}. Typical Step-growth model.", "Born in {gz} year, {na} element. Strong cycle penetration."],
+            peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align."],
+            risk: ["Caution for drawdown in <span class='highlight'>{year}</span>. Protect your capital."],
+            advice: ["Strategy: Master your destiny using K-line laws."]
         }
     };
+
+    function updateUI() {
+        const t = i18n[curLang];
+        document.getElementById('t-title').innerText = t.title;
+        document.getElementById('t-l1').innerText = t.l1;
+        document.getElementById('t-l2').innerText = t.l2;
+        document.getElementById('t-l3').innerText = t.l3;
+        document.getElementById('year').placeholder = t.y;
+        document.getElementById('month').placeholder = t.m;
+        document.getElementById('day').placeholder = t.d;
+        document.getElementById('main-btn').innerText = t.btn;
+        document.getElementById('save-btn').innerText = t.save;
+        document.getElementById('copy-btn').innerText = t.copy;
+        document.getElementById('t-disclaim').innerText = t.disclaim;
+        document.getElementById('t-privacy').innerText = t.privacy;
+        document.getElementById('p-content').innerHTML = t.modal;
+    }
 
     function initCanvas() {
         const dpr = window.devicePixelRatio || 1;
@@ -140,17 +176,13 @@
         if (canvas.width !== Math.floor(rect.width * dpr)) {
             canvas.width = Math.floor(rect.width * dpr);
             canvas.height = Math.floor(rect.height * dpr);
-            ctx.setTransform(1, 0, 0, 1, 0, 0); 
-            ctx.scale(dpr, dpr);
+            ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
         }
     }
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-
     function getGanZhi(year) { let offset = year - 4; return TG[offset % 10] + DZ[offset % 12]; }
     function getNaYin(gz) {
-        const p = ["金命", "水命", "火命", "土命", "木命"];
+        const p = curLang === 'zh' ? ["金命", "水命", "火命", "土命", "木命"] : ["Metal", "Water", "Fire", "Earth", "Wood"];
         const i = (TG.indexOf(gz[0]) % 5 + Math.floor(DZ.indexOf(gz[1]) % 6 / 2)) % 5;
         return p[i];
     }
@@ -159,64 +191,44 @@
         const y = parseInt(document.getElementById('year').value);
         const m = parseInt(document.getElementById('month').value);
         const d = parseInt(document.getElementById('day').value);
-        if (!y || !m || !d) return;
+        if (!y || !m || !d) { alert(i18n[curLang].alertInput); return; }
 
         initCanvas();
-        const rect = canvas.getBoundingClientRect();
-        const w = rect.width, h = rect.height;
-
-        ctx.fillStyle = "#0b0e11";
-        ctx.fillRect(0, 0, w, h);
+        const w = canvas.getBoundingClientRect().width, h = canvas.getBoundingClientRect().height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#0b0e11"; ctx.fillRect(0, 0, w, h);
 
         const gz = getGanZhi(y);
         const star = matrix[curLang].stars[(y + m + d) % 14];
         const na = getNaYin(gz);
-
         document.getElementById('val-gz').innerText = gz;
         document.getElementById('val-star').innerText = star;
         document.getElementById('val-na').innerText = na;
 
-        let curY = h * 0.6;
-        kData = [];
+        let curY = h * 0.6; kData = [];
         let maxP = {y:0, v:999}, minP = {y:0, v:-999};
 
         for (let i = 0; i < 50; i++) {
             const cy = y + i;
-            const cgz = getGanZhi(cy);
-            let vol = (Math.abs(DZ.indexOf(gz[1]) - DZ.indexOf(cgz[1])) === 6) ? 70 : 25;
             const r = (Math.abs(Math.sin(cy * 1.6 + m + d + i)) * 1000) % 1;
-            const open = curY, close = curY - (r - 0.5) * vol;
-            kData.push({ x: 40 + i * ((w-70)/50), open, close, year: cy, gz: cgz, change: ((open-close)/open*100).toFixed(2) });
-            
+            const open = curY, close = curY - (r - 0.5) * 40;
+            kData.push({ x: 40 + i * ((w-70)/50), open, close, year: cy, change: ((open-close)/open*100).toFixed(2) });
             if (close < maxP.v) { maxP.v = close; maxP.y = cy; }
             if (close > minP.v) { minP.v = close; minP.y = cy; }
-
             ctx.strokeStyle = ctx.fillStyle = close < open ? "#0ecb81" : "#f6465d";
-            ctx.beginPath();
-            ctx.moveTo(kData[i].x, open);
-            ctx.lineTo(kData[i].x, close);
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            if (i % 10 === 0) {
-                ctx.fillStyle = "#474d57";
-                ctx.font = "10px monospace";
-                ctx.fillText(cy, kData[i].x-12, h-12);
-            }
+            ctx.beginPath(); ctx.moveTo(kData[i].x, open); ctx.lineTo(kData[i].x, close); ctx.lineWidth = 2; ctx.stroke();
+            if (i % 10 === 0) { ctx.fillStyle = "#474d57"; ctx.font = "10px monospace"; ctx.fillText(cy, kData[i].x-12, h-12); }
             curY = close;
         }
 
-        const seed = y + m + d;
         const M = matrix[curLang];
-        const select = (arr, salt) => arr[(seed + salt) % arr.length];
-        
+        const select = (arr, s) => arr[(y+m+d+s)%arr.length];
         const report = `📊 ${curLang === 'zh' ? '【天命研報】' : '[REPORT]'}\n\n` +
             `✨ ${gz} / ${star} / ${na}\n\n` +
             `1️⃣ ${select(M.intro, 1).replace("{star}", star).replace("{na}", na).replace("{gz}", gz)}\n\n` +
             `2️⃣ ${select(M.peak, 2).replace("{year}", maxP.y)}\n\n` +
             `3️⃣ ${select(M.risk, 3).replace("{year}", minP.y)}\n\n` +
             `4️⃣ ${select(M.advice, 5)}`;
-
         document.getElementById('shareText').innerHTML = report;
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
@@ -228,37 +240,32 @@
         const mx = e.clientX - rect.left;
         const p = kData.reduce((prev, curr) => Math.abs(curr.x - mx) < Math.abs(prev.x - mx) ? curr : prev);
         if (Math.abs(p.x - mx) < 15) {
-            tooltip.style.display = 'block';
-            tooltip.style.left = (mx + 10) + 'px';
-            tooltip.style.top = '20px';
-            tooltip.innerHTML = `<b>${p.year} (${p.gz})</b><br><span style="color:${p.close<p.open?'#0ecb81':'#f6465d'}">${p.change>0?'▲':'▼'} ${Math.abs(p.change)}%</span>`;
+            tooltip.style.display = 'block'; tooltip.style.left = (mx + 10) + 'px'; tooltip.style.top = '20px';
+            tooltip.innerHTML = `<b>${p.year}</b><br><span style="color:${p.close<p.open?'#0ecb81':'#f6465d'}">${p.change>0?'▲':'▼'} ${Math.abs(p.change)}%</span>`;
         } else { tooltip.style.display = 'none'; }
-    });
-
-    document.getElementById('main-btn').addEventListener('click', draw);
-    
-    document.getElementById('save-btn').addEventListener('click', () => {
-        const temp = document.createElement('canvas');
-        const tCtx = temp.getContext('2d');
-        temp.width = canvas.width; temp.height = canvas.height;
-        tCtx.drawImage(canvas, 0, 0);
-        tCtx.fillStyle = "rgba(240, 185, 11, 0.4)";
-        tCtx.font = "bold 20px Arial"; tCtx.textAlign = "right";
-        tCtx.fillText(uiLang[curLang].water, temp.width - 20, temp.height - 40);
-        const a = document.createElement('a'); a.download = `LifeKLine_${Date.now()}.png`; a.href = temp.toDataURL(); a.click();
-    });
-
-    document.getElementById('copy-btn').addEventListener('click', () => {
-        const text = document.getElementById('shareArea').innerText;
-        navigator.clipboard.writeText(text).then(() => alert("研報已複製到剪貼簿！"));
     });
 
     document.getElementById('lang-btn').addEventListener('click', () => {
         curLang = curLang === 'zh' ? 'en' : 'zh';
-        document.getElementById('main-btn').innerText = uiLang[curLang].btn;
-        if(kData.length > 0) draw();
+        updateUI(); if(kData.length > 0) draw();
     });
 
+    document.getElementById('save-btn').addEventListener('click', () => {
+        const temp = document.createElement('canvas'); const tCtx = temp.getContext('2d');
+        temp.width = canvas.width; temp.height = canvas.height;
+        tCtx.drawImage(canvas, 0, 0);
+        tCtx.fillStyle = "rgba(240, 185, 11, 0.4)"; tCtx.font = "bold 20px Arial"; tCtx.textAlign = "right";
+        tCtx.fillText(i18n[curLang].water, temp.width - 20, temp.height - 40);
+        const a = document.createElement('a'); a.download = `LifeKLine.png`; a.href = temp.toDataURL(); a.click();
+    });
+
+    document.getElementById('copy-btn').addEventListener('click', () => {
+        navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert(i18n[curLang].alertCopy));
+    });
+
+    window.toggleModal = (show) => { document.getElementById('p-modal').style.display = show ? 'block' : 'none'; };
+    document.getElementById('main-btn').addEventListener('click', draw);
+    updateUI(); // Init Language
 })();
 </script>
 </body>
