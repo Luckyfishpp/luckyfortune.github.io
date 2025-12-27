@@ -9,8 +9,8 @@
         body { background: var(--bg); color: var(--text-main); font-family: -apple-system, 'PingFang TC', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* 廣告容器優化 */
-        .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border); position: relative; }
+        /* Adsterra 專用廣告容器樣式 */
+        .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: visible; }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
         .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; letter-spacing: 1px; }
@@ -80,8 +80,8 @@
         </div>
 
         <div class="ad-wrapper">
-            <div id="container-1c8414512642a1d6a9a357721384a36c">
-                <script async="async" data-cfasync="false" src="https://pl28346647.effectivegatecpm.com/1c8414512642a1d6a9a357721384a36c/invoke.js"></script>
+            <div id="container-2afeab69b95d509c135fb85eb754b4f2">
+                <script async="async" data-cfasync="false" src="https://pl28347168.effectivegatecpm.com/2afeab69b95d509c135fb85eb754b4f2/invoke.js"></script>
             </div>
         </div>
 
@@ -127,7 +127,7 @@
             save: "📸 保存帶水印截圖", copy: "📋 複製專家研報",
             disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成，不構成投資建議。",
             privacy: "隱私政策與服務條款", water: "Life K-Line Pro | 交易天命",
-            modal: "<b>隱私政策:</b> 我們不收集任何您的出生日期數據。第三方廣告（Adsterra）可能會使用 Cookie 以提供廣告。",
+            modal: "<b>隱私政策:</b> 我們致力於保護隱私。本程序所有計算均在本地完成，不存儲任何出生日期數據。第三方廣告（Adsterra）可能會使用 Cookie 提供廣告。",
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
             na: ["海中金", "大溪水", "天上火", "路旁土", "大林木"],
             types: ["脈衝式成長", "螺旋式上升", "階梯式躍遷", "幾何級爆發", "反轉式觸底", "箱體震盪型", "長線慢牛型", "極端波幅型"],
@@ -140,7 +140,7 @@
             patterns: [
                 "天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，適合跨週期佈局。",
                 "命盤與當前大趨勢產生強烈共振，顯示出「{type}」的獨特路徑，早期雖有震盪但中後期後勁十足。",
-                "觀察其能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時表現卓越。"
+                "觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時表現卓越。"
             ]
         },
         en: {
@@ -195,14 +195,13 @@
         ctx.fillStyle = "#0b0e11"; ctx.fillRect(0, 0, w, h);
 
         let curY = h * 0.5; kData = [];
-        let peakY = y, peakV = 999;
-        let valleyY = y, valleyV = -999;
+        let peakY = y, peakV = 999, valleyY = y, valleyV = -999;
 
         for (let i = 0; i < 50; i++) {
             const cy = y + i;
             const seed = Math.abs(Math.sin(cy * y + m * 55 + d * 88));
             let move = (seed - 0.5) * 60;
-            move -= (curY - h/2) * 0.22; // 強力回彈算法，確保K線不出格
+            move -= (curY - h/2) * 0.22; 
 
             const open = curY; const close = curY + move;
             const x = 40 + i * ((w - 70) / 50);
@@ -241,7 +240,7 @@
                          `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型「${type}」，主星「${star}」。${ptn}\n\n` +
                          `2️⃣ 【波段預測】\n${resPeak} ${resRisk}\n\n` +
                          `3️⃣ 【交易策略】\n${t.advice_core[aIdx]}\n\n` +
-                         `📍 LuckyFortune Terminal - Professional Edition`;
+                         `📍 LuckyFortune Terminal - Pro Edition v21.1`;
 
         document.getElementById('shareText').innerHTML = fullReport.replace(/\n/g, "<br>");
         document.getElementById('shareArea').style.display = 'block';
@@ -249,13 +248,12 @@
         document.getElementById('social-grid').style.display = 'grid';
 
         const shareUrl = window.location.href;
-        const shareMsg = encodeURIComponent(fullReport + "\nCheck yours: " + shareUrl);
+        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nCheck yours: " + shareUrl);
         document.getElementById('share-wa').href = `https://wa.me/?text=${shareMsg}`;
         document.getElementById('share-tg').href = `https://t.me/share/url?url=${shareUrl}&text=${shareMsg}`;
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareMsg}`;
     }
 
-    // 交互提示
     canvas.addEventListener('mousemove', (e) => {
         if (!kData.length) return;
         const rect = canvas.getBoundingClientRect();
@@ -271,8 +269,8 @@
     document.getElementById('main-btn').addEventListener('click', draw);
     document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'zh' ? 'en' : 'zh'; updateUI(); if(kData.length) draw(); });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        const tempDiv = document.createElement("div"); tempDiv.innerHTML = document.getElementById('shareText').innerHTML;
-        navigator.clipboard.writeText(tempDiv.innerText).then(() => alert(curLang=='zh'?"研報已複製":"Report Copied"));
+        const text = document.getElementById('shareText').innerText;
+        navigator.clipboard.writeText(text).then(() => alert(curLang=='zh'?"研報已複製":"Report Copied"));
     });
 
     document.getElementById('save-btn').addEventListener('click', () => {
