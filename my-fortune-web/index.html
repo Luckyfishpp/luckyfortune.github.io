@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life K-Line Pro | 天命金線終端</title>
     <style>
         :root { --gold: #f0b90b; --bg: #0b0e11; --card: #161a1e; --border: #2b2f36; --text-main: #eaecef; --text-dim: #848e9c; --green: #0ecb81; --red: #f6465d; }
-        body { background: var(--bg); color: var(--text-main); font-family: -apple-system, 'PingFang TC', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        body { background: var(--bg); color: var(--text-main); font-family: -apple-system, 'Helvetica Neue', 'PingFang TC', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* 廣告位樣式 */
         .ad-wrapper { width: 100%; margin: 10px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: hidden; }
         #fallback-mid { display: none; width: 100%; }
 
@@ -19,20 +18,20 @@
         
         .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
-        .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
+        .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; }
         .stat-value { font-size: 13px; color: var(--gold); font-weight: bold; }
         
         .input-grid { display: flex; gap: 10px; margin-bottom: 15px; }
         input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center; outline: none; }
         
-        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; position: relative; z-index: 100; }
+        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; position: relative; z-index: 100; text-transform: uppercase; }
         
         #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 10; }
         #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.95); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 1001; pointer-events: none; color: white; white-space: nowrap; }
         
         #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 25px; border-radius: 6px; background: #161a1e; border-left: 6px solid var(--gold); }
-        #shareText { font-size: 14px; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; text-align: justify; }
+        #shareText { font-size: 14px; line-height: 1.8; color: var(--text-main); text-align: justify; }
         .highlight { color: var(--gold); font-weight: bold; }
         
         .action-grid { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; width: 100%; }
@@ -55,13 +54,13 @@
 
         <div class="header">
             <h2 id="t-title">LIFE K-LINE PRO</h2>
-            <button class="lang-btn" id="lang-btn">EN/中文</button>
+            <button class="lang-btn" id="lang-btn">Switch Language</button>
         </div>
 
         <div class="dashboard">
-            <div class="stat-box"><div class="stat-label" id="t-l1">格局</div><div class="stat-value" id="val-gz">--</div></div>
-            <div class="stat-box"><div class="stat-label" id="t-l2">主星</div><div class="stat-value" id="val-star">--</div></div>
-            <div class="stat-box"><div class="stat-label" id="t-l3">五行</div><div class="stat-value" id="val-na">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l1">Pillar</div><div class="stat-value" id="val-gz">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l2">Dominant</div><div class="stat-value" id="val-star">--</div></div>
+            <div class="stat-box"><div class="stat-label" id="t-l3">Essence</div><div class="stat-value" id="val-na">--</div></div>
         </div>
 
         <div class="input-grid">
@@ -70,7 +69,7 @@
             <input type="number" id="day" placeholder="DD" inputmode="numeric">
         </div>
 
-        <button id="main-btn">解碼交易天命數據流</button>
+        <button id="main-btn">DECODE DESTINY DATA STREAM</button>
         
         <div id="canvasWrap">
             <div id="tooltip"></div>
@@ -89,30 +88,31 @@
         <div id="shareArea"><div id="shareText"></div></div>
 
         <div class="action-grid" id="action-grid">
-            <button class="btn btn-gold" id="save-btn">📸 保存帶水印截圖</button>
-            <button class="btn btn-dark" id="copy-btn">📋 複製專家研報</button>
+            <button class="btn btn-gold" id="save-btn">📸 SAVE SCREENSHOT</button>
+            <button class="btn btn-dark" id="copy-btn">📋 COPY ANALYST REPORT</button>
         </div>
 
         <div class="social-grid" id="social-grid">
             <a href="#" class="btn btn-social" id="share-wa">WhatsApp</a>
             <a href="#" class="btn btn-social" id="share-tg">Telegram</a>
-            <a href="#" class="btn btn-social" id="share-x">Twitter / X</a>
+            <a href="#" class="btn btn-social" id="share-x">X / Twitter</a>
         </div>
 
         <footer>
-            <p id="t-disclaim">本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成。</p>
+            <p id="t-disclaim">For entertainment only. Trading involves risk. All data models are algorithmically generated and do not constitute financial advice.</p>
             <p>© 2025 LuckyFortune Terminal</p>
         </footer>
     </div>
 
 <script>
 (function() {
-    let curLang = 'zh';
+    let curLang = 'en'; // Default to English
     let kData = [];
-    const TG = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
-    const DZ = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+    const TG = ["Jia", "Yi", "Bing", "Ding", "Wu", "Ji", "Geng", "Xin", "Ren", "Gui"];
+    const DZ = ["Zi", "Chou", "Yin", "Mao", "Chen", "Si", "Wu", "Wei", "Shen", "You", "Xu", "Hai"];
+    const TG_ZH = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+    const DZ_ZH = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     
-    // 瀑布流監測
     function watchAd() {
         setTimeout(() => {
             const main = document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2');
@@ -129,13 +129,34 @@
     const tooltip = document.getElementById('tooltip');
 
     const i18n = {
+        en: {
+            title: "LIFE K-LINE PRO", l1: "Pillar", l2: "Dominant", l3: "Essence", btn: "DECODE DESTINY DATA STREAM",
+            save: "📸 SAVE SCREENSHOT", copy: "📋 COPY ANALYST REPORT",
+            disclaim: "For entertainment only. Trading involves risk. All data models are algorithmically generated and do not constitute financial advice.",
+            stars: ["Emperor", "Advisor", "Sun", "Warrior", "Healer", "Minister", "Treasury", "Moon", "Wolf", "Speaker", "Judge", "Sage", "Marshal", "Vanguard"],
+            na: ["Ocean Gold", "River Water", "Sky Fire", "Road Earth", "Great Forest"],
+            types: ["Impulse Growth", "Spiral Ascent", "Step Transition", "Geometric Blast", "V-Bottom Reversal", "Range Bound", "Long-term Bull", "Extreme Volatility"],
+            signs: ["Double Wealth", "Noble Alignment", "Sun-Moon Harmony", "Triple Fortune", "Imperial Palace", "Golden Radiance"],
+            advice_core: [
+                "Core Strategy: Utilize cross-cycle moving averages to correct emotional bias. Maintain strong positions during major uptrends to minimize transaction friction.",
+                "Expert Insight: Counter-cyclical thinking is key when market fear peaks. Your profile favors accumulation during extreme drawdowns to capture low-cost basis.",
+                "Trading Mindset: Destiny is awareness. All K-line fluctuations reflect cognitive edges. Strictly execute take-profit targets to secure realized gains."
+            ],
+            patterns: [
+                "The charts reveal a '{sign}' omen, suggesting that your net asset value possesses exceptional recovery power in long-term cycles, reclaiming lost ground rapidly.",
+                "Your destiny profile resonates strongly with current macro trends, indicating a '{type}' trajectory. Expect initial base-building volatility followed by explosive momentum.",
+                "Analyzing energy distribution, the dominant star '{star}' radiates sharp trading intuition, particularly when breaking through critical psychological resistance levels."
+            ],
+            reportTitle: "[DESTINY K-LINE ANALYST REPORT]",
+            peakMsg: "Major wealth surge cycle is projected to peak in <span class='highlight'>{year}</span>. Maintain liquidity and monitor emotional premiums during this window."
+        },
         zh: {
             title: "LIFE K-LINE PRO", l1: "格局", l2: "主星", l3: "五行", btn: "解碼交易天命數據流",
             save: "📸 保存帶水印截圖", copy: "📋 複製專家研報",
             disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成，不構成投資建議。",
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
             na: ["海中金", "大溪水", "天上火", "路旁土", "大林木"],
-            types: ["脈衝式成長型", "螺旋式上升型", "階梯式躍遷型", "幾何級爆發型", "反轉式觸底型", "箱體震盪型", "長線慢牛型", "極端波幅型"],
+            types: ["脈衝式成長", "螺旋式上升", "階梯式躍遷", "幾何級爆發", "反轉式觸底", "箱體震盪型", "長線慢牛型", "極端波幅型"],
             signs: ["雙祿交流", "魁鉞夾命", "日月並明", "三奇加會", "紫府同宮", "金燦光輝"],
             advice_core: [
                 "核心策略：利用跨週期均線修正情緒偏差，在主升浪期間堅定持倉，避免頻繁交易導致的損耗。",
@@ -145,27 +166,10 @@
             patterns: [
                 "天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，即便短期回撤也能迅速收復失地。",
                 "命盤與當前大趨勢產生強烈共振，呈現「{type}」的獨特路徑，早期雖有震盪築底過程，但中後期爆發力驚人。",
-                "觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時，能精準捕捉突破時機。"
-            ]
-        },
-        en: {
-            title: "LIFE K-LINE PRO", l1: "PILLAR", l2: "STAR", l3: "ELEMENT", btn: "DECODE DESTINY DATA",
-            save: "📸 SAVE SCREENSHOT", copy: "📋 COPY REPORT",
-            disclaim: "For entertainment only. Trading involves risk. Models are algorithmically generated.",
-            stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
-            na: ["Ocean Gold", "Stream Water", "Heaven Fire", "Road Earth", "Forest Wood"],
-            types: ["Pulsed Growth", "Spiral Ascent", "Step Transition", "Geometric Blast", "V-Shape Bottom", "Box Oscillation", "Slow Bull", "High Volatility"],
-            signs: ["Double Wealth", "Elite Alignment", "Sun-Moon Harmony", "Triple Fortune", "Imperial Palace", "Golden Glow"],
-            advice_core: [
-                "Strategy: Use cross-cycle averages to correct emotional bias. Hold firm during surges.",
-                "Advice: Be contrarian when the market is fearful. Your destiny favors long positions in dips.",
-                "Mindset: Destiny is awareness; K-line moves reflect your cognitive edge. Execute profit-taking strictly."
+                "觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時，能精確捕捉突破時機。"
             ],
-            patterns: [
-                "The '{sign}' omen suggests your net worth has high resilience in long-term cycles.",
-                "Resonance with global trends indicates a '{type}' path with massive potential momentum.",
-                "Main star '{star}' radiates strong intuition, especially when breaking key resistance levels."
-            ]
+            reportTitle: "【天命金線交易研報】",
+            peakMsg: "人生資產主升浪預計在 <span class='highlight'>{year}年</span> 到達巔峰。建議在此區間內注意情緒溢價，保持流動性。"
         }
     };
 
@@ -179,6 +183,7 @@
         document.getElementById('save-btn').innerText = t.save;
         document.getElementById('copy-btn').innerText = t.copy;
         document.getElementById('t-disclaim').innerText = t.disclaim;
+        document.getElementById('lang-btn').innerText = curLang === 'en' ? '切換中文' : 'Switch English';
     }
 
     function draw() {
@@ -220,37 +225,43 @@
         const aIdx = (y + m + d) % 3;
         const pIdx = (y * d) % 3;
 
-        const gz = TG[(y - 4) % 10] + DZ[(y - 4) % 12];
-        const na = t.na[y % 5];
-        const star = t.stars[sIdx];
-        const type = t.types[tIdx];
-        const sign = t.signs[siIdx];
+        let gz, star, na, type, sign;
+        if (curLang === 'en') {
+            gz = TG[(y - 4) % 10] + "-" + DZ[(y - 4) % 12];
+            star = t.stars[sIdx];
+            na = t.na[y % 5];
+        } else {
+            gz = TG_ZH[(y - 4) % 10] + DZ_ZH[(y - 4) % 12];
+            star = t.stars[sIdx];
+            na = t.na[y % 5];
+        }
+        type = t.types[tIdx];
+        sign = t.signs[siIdx];
 
         document.getElementById('val-gz').innerText = gz;
         document.getElementById('val-star').innerText = star;
         document.getElementById('val-na').innerText = na;
 
         const ptn = t.patterns[pIdx].replace("{sign}", sign).replace("{type}", type).replace("{star}", star);
-        const resPeak = curLang === 'zh' ? `人生資產主升浪預計在 <span class='highlight'>${peakY}年</span> 到達巔峰。` : `Wealth peak expected in <span class='highlight'>${peakY}</span>.`;
+        const resPeak = t.peakMsg.replace("{year}", peakY);
         
-        const fullReport = `📊 ${curLang=='zh'?'【天命金線交易研報】':'[TRADE DESTINY REPORT]'}\n\n` + 
-                         `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型屬於「${type}」，主星「${star}」入命。${ptn}\n\n` +
-                         `2️⃣ 【波段預測】\n${resPeak} 建議在此區間內注意情緒溢價，保持資產配置的流動性。\n\n` +
-                         `3️⃣ 【交易策略】\n${t.advice_core[aIdx]}\n\n` +
-                         `📍 LuckyFortune Terminal - Professional V23.0`;
+        const fullReport = `📊 ${t.reportTitle}\n\n` + 
+                         `1️⃣ 【${curLang=='en'?'CORE PILLAR':'核心格局'}】\nPillar: ${gz} | Essence: ${na}\nModel: ${type} | Dominant: ${star}\n${ptn}\n\n` +
+                         `2️⃣ 【${curLang=='en'?'CYCLE FORECAST':'波段預測'}】\n${resPeak.replace(/<[^>]*>/g, '')}\n\n` +
+                         `3️⃣ 【${curLang=='en'?'TRADING STRATEGY':'交易策略'}】\n${t.advice_core[aIdx]}\n\n` +
+                         `📍 LuckyFortune Terminal - V25.0 Pro`;
 
         document.getElementById('shareText').innerHTML = fullReport.replace(/\n/g, "<br>");
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
         document.getElementById('social-grid').style.display = 'grid';
 
-        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nView: " + window.location.href);
+        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nDecode yours: " + window.location.href);
         document.getElementById('share-wa').href = `https://wa.me/?text=${shareMsg}`;
         document.getElementById('share-tg').href = `https://t.me/share/url?url=${window.location.href}&text=${shareMsg}`;
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareMsg}`;
     }
 
-    // 交互與按鈕邏輯
     canvas.addEventListener('mousemove', (e) => {
         if (!kData.length) return;
         const rect = canvas.getBoundingClientRect();
@@ -264,9 +275,9 @@
     });
 
     document.getElementById('main-btn').addEventListener('click', draw);
-    document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'zh' ? 'en' : 'zh'; updateUI(); if(kData.length) draw(); });
+    document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'en' ? 'zh' : 'en'; updateUI(); if(kData.length) draw(); });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert(curLang=='zh'?"研報已複製":"Copied"));
+        navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert(curLang=='en'?"Report Copied":"研報已複製"));
     });
     document.getElementById('save-btn').addEventListener('click', () => {
         const temp = document.createElement('canvas'); const tCtx = temp.getContext('2d');
