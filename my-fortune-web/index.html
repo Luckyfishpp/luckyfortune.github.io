@@ -3,112 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life K-Line Pro | 專業天命終端</title>
+    <title>Life K-Line Pro | 天命金線交易終端</title>
+    <meta name="description" content="Life K-Line Pro - Professional Destiny Analysis Terminal. Analyze your wealth cycle with big data.">
+    
     <style>
         :root { 
             --gold: #f0b90b; --bg: #0b0e11; --card: #161a1e; --border: #2b2f36;
             --text-main: #eaecef; --text-dim: #848e9c; --green: #0ecb81; --red: #f6465d; 
         }
-        body { background: var(--bg); color: var(--text-main); font-family: "PingFang SC", sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        body { background: var(--bg); color: var(--text-main); font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* 廣告位樣式 */
-        .ad-banner { width: 100%; min-height: 60px; background: #1c2127; border: 1px dashed var(--border); margin: 10px 0; display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 11px; border-radius: 4px; overflow: hidden; }
+        /* A-Ads 廣告容器優化 */
+        .ad-frame-wrapper { 
+            width: 100%; 
+            margin: 15px auto; 
+            text-align: center;
+            position: relative;
+            z-index: 1000;
+        }
+        .ad-frame-wrapper iframe {
+            border: 0; 
+            padding: 0; 
+            width: 100%; /* 寬度設為 100% 以適應自適應寬度 */
+            max-width: 468px; /* A-Ads 常規上限 */
+            height: 60px; /* 自適應高度通常為 60px */
+            display: block; 
+            margin: auto;
+        }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin: 5px 0 15px; width: 100%; }
-        .header h2 { font-size: 16px; color: var(--gold); margin: 0; letter-spacing: 1px; }
-        .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+        /* UI 組件 */
+        .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+        .header h2 { font-size: 16px; color: var(--gold); margin: 0; }
+        .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
 
         .destiny-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .stat-box { background: var(--card); border: 1px solid var(--border); padding: 10px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
+        .stat-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
         .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
         .stat-value { font-size: 13px; color: var(--gold); font-weight: bold; }
 
-        /* 輸入框對齊 */
-        .input-grid { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; }
-        .input-group { flex: 1; display: flex; flex-direction: column; }
-        .input-group label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; padding-left: 2px; }
-        input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; text-align: center; }
-        input:focus { border-color: var(--gold); }
+        .input-grid { display: flex; gap: 10px; margin-bottom: 15px; }
+        .input-group { flex: 1; }
+        input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center; }
 
-        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; }
-
-        /* 圖表與交互 */
-        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 6px; margin-top: 15px; cursor: crosshair; }
-        canvas { display: block; width: 100%; height: 100%; }
-        #tooltip { position: absolute; display: none; background: rgba(30, 35, 41, 0.95); border: 1px solid var(--gold); padding: 10px; border-radius: 4px; font-size: 12px; z-index: 1000; pointer-events: none; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.5); min-width: 80px; }
+        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; }
+        
+        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 6px; margin-top: 15px; }
+        #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.9); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 2000; color: white; pointer-events: none; }
 
         #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 20px; border-radius: 6px; background: #161a1e; border-left: 5px solid var(--gold); }
         #shareText { font-size: 14px; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; }
         .highlight { color: var(--gold); font-weight: bold; }
 
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; width: 100%; }
-        .share-btn { background: #2b2f36; color: white; border: none; padding: 14px; font-size: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .btn-gold { background: var(--gold); color: #000; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; }
+        .share-btn { background: #2b2f36; color: white; border: none; padding: 15px; font-size: 12px; border-radius: 6px; cursor: pointer; }
+        .btn-gold { background: var(--gold); color: #000; font-weight: bold; }
 
-        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; line-height: 1.8; }
-        .privacy-links a { color: var(--text-dim); text-decoration: none; margin: 0 8px; border-bottom: 1px solid #474d57; }
+        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; }
+        .privacy-link { cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="ad-banner">ADVERTISEMENT - TOP BANNER</div>
+        <div class="ad-frame-wrapper">
+            <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive'></iframe>
+        </div>
 
         <div class="header">
-            <h2 id="t-title">LIFE K-LINE TERMINAL</h2>
-            <button class="lang-btn" id="lang-btn">English / 中文</button>
+            <h2 id="t-title">Life K-Line Pro</h2>
+            <button class="lang-btn" id="lang-btn">EN / 中文</button>
         </div>
 
         <div class="destiny-dashboard">
-            <div class="stat-box"><div class="stat-label" id="t-l1">年柱/格局</div><div class="stat-value" id="val-gz">--</div></div>
-            <div class="stat-box"><div class="stat-label" id="t-l2">紫微主星</div><div class="stat-value" id="val-star">--</div></div>
-            <div class="stat-box"><div class="stat-label" id="t-l3">納音/屬性</div><div class="stat-value" id="val-na">--</div></div>
+            <div class="stat-box"><div class="stat-label">格局</div><div id="val-gz" class="stat-value">--</div></div>
+            <div class="stat-box"><div class="stat-label">主星</div><div id="val-star" class="stat-value">--</div></div>
+            <div class="stat-box"><div class="stat-label">五行</div><div id="val-na" class="stat-value">--</div></div>
         </div>
 
         <div class="input-grid">
-            <div class="input-group">
-                <label id="t-y">YEAR</label>
-                <input type="number" id="year" placeholder="YYYY">
-            </div>
-            <div class="input-group">
-                <label id="t-m">MONTH</label>
-                <input type="number" id="month" placeholder="MM">
-            </div>
-            <div class="input-group">
-                <label id="t-d">DAY</label>
-                <input type="number" id="day" placeholder="DD">
-            </div>
+            <div class="input-group"><input type="number" id="year" placeholder="1995"></div>
+            <div class="input-group"><input type="number" id="month" placeholder="05"></div>
+            <div class="input-group"><input type="number" id="day" placeholder="20"></div>
         </div>
 
-        <button id="main-btn">START ANALYSIS</button>
+        <button id="main-btn">解碼交易天命</button>
         
         <div id="canvasWrap">
             <div id="tooltip"></div>
             <canvas id="kCanvas"></canvas>
         </div>
 
+        <div class="ad-frame-wrapper">
+            <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive'></iframe>
+        </div>
+
         <div id="shareArea">
             <div id="shareText"></div>
-            <div class="ad-banner" style="margin-top:20px; border-style: solid;">SPONSORED CONTENT</div>
+            <div style="margin-top:20px; border-top:1px solid #2b2f36; padding-top:10px;">
+                <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%; height:60px; border:0;"></iframe>
+            </div>
         </div>
 
         <div class="action-grid" id="action-grid">
-            <button class="share-btn btn-gold" id="save-btn">📸 SAVE CHART</button>
-            <button class="share-btn" id="copy-btn">📋 COPY REPORT</button>
-            <button class="share-btn" id="x-btn">𝕏 X (Twitter)</button>
-            <button class="share-btn" id="fb-btn">f Facebook</button>
+            <button class="share-btn btn-gold" id="save-btn">📸 保存截圖</button>
+            <button class="share-btn" id="copy-btn">📋 複製研報</button>
         </div>
 
-        <div class="ad-banner" style="margin-top:30px;">ADVERTISEMENT - FOOTER</div>
-
         <footer>
-            <div class="privacy-links">
-                <a href="#" id="t-p1">Privacy Policy</a>
-                <a href="#" id="t-p2">Terms of Service</a>
-            </div>
-            <p id="t-disclaim">Destiny is constant, trading has its way. For reference only.</p>
-            <p>© 2025 LuckyFortune Pro.</p>
+            <p><span class="privacy-link" onclick="alert('Privacy Policy: We do not store your data. Ads provided by A-Ads.')">Privacy Policy</span> | <span>Terms</span></p>
+            <p>© 2025 LuckyFortune Terminal. Data for reference only.</p>
         </footer>
     </div>
 
@@ -120,26 +124,24 @@
     const DZ = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     
     const uiLang = {
-        zh: { title: "命運天機交易終端", y: "出生年", m: "月", d: "日", btn: "解碼天命數據流", l1: "年柱/格局", l2: "紫微主星", l3: "納音/屬性", save: "📸 保存帶水印截圖", copy: "📋 複製專家研報", p1: "隱私政策", p2: "服務條款", disclaim: "天命有常，交易有道。系統僅供參考。", water: "Life K-Line Pro | 天命有常 交易有道" },
-        en: { title: "DESTINY K-LINE TERMINAL", y: "YEAR", m: "MONTH", d: "DAY", btn: "DECODE DESTINY STREAM", l1: "PILLAR", l2: "MAIN STAR", l3: "ELEMENT", save: "📸 SAVE IMAGE", copy: "📋 COPY REPORT", p1: "Privacy", p2: "Terms", disclaim: "Destiny is constant, trading has its way. For reference only.", water: "Life K-Line Pro | Trading with Destiny" }
+        zh: { btn: "解碼天命數據流", save: "📸 保存截圖", copy: "📋 複製研報", water: "Life K-Line Pro" },
+        en: { btn: "DECODE DESTINY", save: "📸 SAVE IMAGE", copy: "📋 COPY REPORT", water: "Life K-Line Pro" }
     };
 
     const matrix = {
         zh: {
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
-            intro: ["格局為「{star}」獨坐，納音{na}，資產模型呈現典型的「脈衝式成長」。", "本命{gz}，{na}格局。天盤現「雙祿交流」之兆，穿透週期能力強。", "身入{star}之境，帶有「殺破狼」變革基因，適合在極端波動中捕捉躍遷機會。"],
-            peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，化祿入命，資產溢價最高窗口。", "數據流顯示 <span class='highlight'>{year}年</span> 逢天魁加持，社會槓桿達到最大化。", "觀測到 <span class='highlight'>{year}年</span> 有強烈多頭信號，適合進行資產結構優化。"],
-            risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，地支逢歲破，建議清空高槓桿部位。", "在 <span class='highlight'>{year}年</span> 觀測到空亡跡象，此階段宜持幣觀望，避免投機。", "注意 <span class='highlight'>{year}年</span> 築底震盪，這是對心理素質的考驗，切勿黎明前止損。"],
-            clash: ["流年提示：每逢 {clash} 年地支六衝，波動加倍。波動即是撿拾廉價籌碼的機會。", "能量建議：在 {clash} 年氣場衝突嚴重，建議採取現金為王策略應對。"],
-            advice: ["策略：知命而不信命，利用K線規律進行非對稱博弈，實現階級跨越。", "心法：財富是認知的變現。在低谷期修煉認知，在高潮期享受複利。"]
+            intro: ["格局為「{star}」，資產呈現典型的「脈衝式成長」。", "本命{gz}，納音{na}。天盤現「雙祿交流」之兆，穿透週期能力強。"],
+            peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，資產溢價最高窗口。"],
+            risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，建議採取防禦配置。"],
+            advice: ["策略：知命而不信命，利用K線規律進行博弈。"]
         },
         en: {
             stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
-            intro: ["Structure is {star}, {na} element. Typical 'Step-growth' asset model.", "Born in {gz}. Data shows 'Wealth-Carriage' signs with strong cycle resilience.", "Enter {star} state. Possesses 'Aggressive' genes, ideal for capturing volatility."],
-            peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align for maximum premium.", "Data indicates <span class='highlight'>{year}</span> has 'Noble' support. Social leverage peaks here.", "Strong bullish signals in <span class='highlight'>{year}</span>. Time for restructuring."],
-            risk: ["Caution for drawdown in <span class='highlight'>{year}</span>. Defensive positions recommended.", "Signs of 'Void' in <span class='highlight'>{year}</span>. Stay liquid, avoid high leverage.", "Correction expected in <span class='highlight'>{year}</span>. A test of patience; don't exit before dawn."],
-            clash: ["Tips: Every {clash} year brings clash. Volatility is your friend if prepared.", "Advice: High energy clash in {clash}. Cash-is-king strategy advised."],
-            advice: ["Strategy: Use K-line laws for asymmetric bets to achieve class leap.", "Mindset: Wealth is converted knowledge. Build in troughs, harvest in peaks."]
+            intro: ["Structure is {star}. Typical Step-growth model."],
+            peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align."],
+            risk: ["Caution for drawdown in <span class='highlight'>{year}</span>."],
+            advice: ["Strategy: Use K-line laws for asymmetric bets."]
         }
     };
 
@@ -149,9 +151,9 @@
 
     function getGanZhi(year) { let offset = year - 4; return TG[offset % 10] + DZ[offset % 12]; }
     function getNaYin(gz) {
-        const p = ["金命/Gold", "水命/Water", "火命/Fire", "土命/Earth", "木命/Wood"];
+        const p = ["金命", "水命", "火命", "土命", "木命"];
         const i = (TG.indexOf(gz[0]) % 5 + Math.floor(DZ.indexOf(gz[1]) % 6 / 2)) % 5;
-        return p[i].split('/')[curLang === 'zh' ? 0 : 1];
+        return p[i];
     }
 
     function draw() {
@@ -180,7 +182,7 @@
         for (let i = 0; i < 50; i++) {
             const cy = y + i;
             const cgz = getGanZhi(cy);
-            let vol = (Math.abs(DZ.indexOf(gz[1]) - DZ.indexOf(cgz[1])) === 6) ? 75 : 28;
+            let vol = (Math.abs(DZ.indexOf(gz[1]) - DZ.indexOf(cgz[1])) === 6) ? 70 : 25;
             const r = (Math.abs(Math.sin(cy * 1.6 + m + d + i)) * 1000) % 1;
             const open = curY, close = curY - (r - 0.5) * vol;
             kData.push({ x: 40 + i * ((w-70)/50), open, close, year: cy, gz: cgz, change: ((open-close)/open*100).toFixed(2) });
@@ -195,66 +197,35 @@
         const seed = y + m + d;
         const M = matrix[curLang];
         const select = (arr, salt) => arr[(seed + salt) % arr.length];
-        
-        const report = `📊 ${curLang === 'zh' ? '【天命研報】' : '[DESTINY REPORT]'}\n\n` +
-            `✨ ${curLang === 'zh' ? '格局' : 'STATUS'}: <span class="highlight">${gz} / ${star}</span>\n\n` +
+        const report = `📊 ${curLang === 'zh' ? '【天命研報】' : '[REPORT]'}\n\n` +
+            `✨ ${gz} / ${star} / ${na}\n\n` +
             `1️⃣ ${select(M.intro, 1).replace("{star}", star).replace("{na}", na).replace("{gz}", gz)}\n\n` +
             `2️⃣ ${select(M.peak, 2).replace("{year}", maxP.y)}\n\n` +
             `3️⃣ ${select(M.risk, 3).replace("{year}", minP.y)}\n\n` +
-            `4️⃣ ${select(M.clash, 4).replace("{clash}", getGanZhi(y+12))}\n\n` +
             `5️⃣ ${select(M.advice, 5)}`;
-
         document.getElementById('shareText').innerHTML = report;
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
     }
 
-    // 鼠標移動提示功能
+    // Tooltip 交互
     canvas.addEventListener('mousemove', (e) => {
         if (!kData.length) return;
         const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
+        const mx = (e.clientX - rect.left);
         const p = kData.reduce((prev, curr) => Math.abs(curr.x - mx) < Math.abs(prev.x - mx) ? curr : prev);
-        
         if (Math.abs(p.x - mx) < 15) {
             tooltip.style.display = 'block';
-            tooltip.style.left = (mx + 15) + 'px';
-            tooltip.style.top = '20px';
-            const color = p.close < p.open ? '#0ecb81' : '#f6465d';
-            tooltip.innerHTML = `<b style="color:var(--gold)">${p.year} (${p.gz})</b><br><span style="color:${color}">${p.change > 0 ? '▲' : '▼'} ${Math.abs(p.change)}%</span>`;
+            tooltip.style.left = (mx + 10) + 'px'; tooltip.style.top = '20px';
+            tooltip.innerHTML = `<b>${p.year}</b><br><span style="color:${p.close<p.open?'#0ecb81':'#f6465d'}">${p.change>0?'▲':'▼'} ${Math.abs(p.change)}%</span>`;
         } else { tooltip.style.display = 'none'; }
     });
 
-    canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-
-    function switchLang() {
-        curLang = curLang === 'zh' ? 'en' : 'zh';
-        const L = uiLang[curLang];
-        document.getElementById('t-title').innerText = L.title;
-        document.getElementById('t-y').innerText = L.y;
-        document.getElementById('t-m').innerText = L.m;
-        document.getElementById('t-d').innerText = L.d;
-        document.getElementById('main-btn').innerText = L.btn;
-        document.getElementById('t-l1').innerText = L.l1;
-        document.getElementById('t-l2').innerText = L.l2;
-        document.getElementById('t-l3').innerText = L.l3;
-        document.getElementById('save-btn').innerText = L.save;
-        document.getElementById('copy-btn').innerText = L.copy;
-        document.getElementById('t-disclaim').innerText = L.disclaim;
-        if(kData.length > 0) draw();
-    }
-
-    document.getElementById('lang-btn').addEventListener('click', switchLang);
     document.getElementById('main-btn').addEventListener('click', draw);
-    document.getElementById('save-btn').addEventListener('click', () => {
-        const temp = document.createElement('canvas');
-        const tCtx = temp.getContext('2d');
-        temp.width = canvas.width; temp.height = canvas.height;
-        tCtx.drawImage(canvas, 0, 0);
-        tCtx.fillStyle = "rgba(240, 185, 11, 0.4)";
-        tCtx.font = "bold 20px Arial"; tCtx.textAlign = "right";
-        tCtx.fillText(uiLang[curLang].water, temp.width - 20, temp.height - 40);
-        const a = document.createElement('a'); a.download = `Destiny_${Date.now()}.png`; a.href = temp.toDataURL(); a.click();
+    document.getElementById('lang-btn').addEventListener('click', () => {
+        curLang = curLang === 'zh' ? 'en' : 'zh';
+        document.getElementById('main-btn').innerText = uiLang[curLang].btn;
+        if(kData.length > 0) draw();
     });
     document.getElementById('copy-btn').addEventListener('click', () => {
         navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert("Copied!"));
