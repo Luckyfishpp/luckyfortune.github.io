@@ -4,63 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Life K-Line Pro | 天命金線交易終端</title>
-    <meta name="description" content="Life K-Line Pro - Professional Destiny Analysis Terminal. Analyze your wealth cycle with big data.">
-    
+    <meta name="description" content="專業級人生 K 線分析終端。利用大數據解碼你的財富週期與交易天命。">
+    <meta name="keywords" content="Trading, Crypto, Bitcoin, Fortune, Destiny, K-Line, Financial Analytics">
+
     <style>
         :root { 
             --gold: #f0b90b; --bg: #0b0e11; --card: #161a1e; --border: #2b2f36;
             --text-main: #eaecef; --text-dim: #848e9c; --green: #0ecb81; --red: #f6465d; 
         }
-        body { background: var(--bg); color: var(--text-main); font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        body { background: var(--bg); color: var(--text-main); font-family: "PingFang SC", "Microsoft JhengHei", sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* A-Ads 廣告容器優化 */
+        /* A-Ads 廣告位優化 */
         .ad-frame-wrapper { 
-            width: 100%; 
-            margin: 15px auto; 
-            text-align: center;
-            position: relative;
-            z-index: 1000;
+            width: 100%; margin: 15px auto; text-align: center; position: relative; z-index: 999; 
+            background: #0d1117; border-radius: 4px; overflow: hidden; min-height: 60px;
         }
-        .ad-frame-wrapper iframe {
-            border: 0; 
-            padding: 0; 
-            width: 100%; /* 寬度設為 100% 以適應自適應寬度 */
-            max-width: 468px; /* A-Ads 常規上限 */
-            height: 60px; /* 自適應高度通常為 60px */
-            display: block; 
-            margin: auto;
-        }
+        .ad-frame-wrapper iframe { border: 0; padding: 0; width: 100%; height: 60px; display: block; margin: auto; }
 
-        /* UI 組件 */
+        /* UI 元件 */
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
-        .header h2 { font-size: 16px; color: var(--gold); margin: 0; }
-        .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
+        .header h2 { font-size: 18px; color: var(--gold); margin: 0; letter-spacing: 1px; font-weight: 900; }
+        .lang-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 5px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; }
 
         .destiny-dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 4px; text-align: center; border-top: 2px solid var(--gold); }
         .stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 4px; }
-        .stat-value { font-size: 13px; color: var(--gold); font-weight: bold; }
+        .stat-value { font-size: 14px; color: var(--gold); font-weight: bold; }
 
-        .input-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .input-group { flex: 1; }
-        input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; text-align: center; }
+        .input-grid { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; }
+        .input-group { flex: 1; display: flex; flex-direction: column; }
+        input { background: #1e2329; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; text-align: center; }
+        input:focus { border-color: var(--gold); }
 
-        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; }
-        
-        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 6px; margin-top: 15px; }
-        #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.9); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 2000; color: white; pointer-events: none; }
+        #main-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 18px; border-radius: 6px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        #main-btn:active { transform: scale(0.98); }
 
-        #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 20px; border-radius: 6px; background: #161a1e; border-left: 5px solid var(--gold); }
-        #shareText { font-size: 14px; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; }
+        /* K線圖 - 修正放大 Bug 的核心 CSS */
+        #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 6px; margin-top: 15px; overflow: hidden; }
+        canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+        #tooltip { position: absolute; display: none; background: rgba(30, 35, 41, 0.95); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 1001; pointer-events: none; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+
+        /* 解析報告 */
+        #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 25px; border-radius: 6px; background: #161a1e; border-left: 6px solid var(--gold); }
+        #shareText { font-size: 14px; line-height: 1.9; color: var(--text-main); white-space: pre-wrap; }
         .highlight { color: var(--gold); font-weight: bold; }
 
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; }
-        .share-btn { background: #2b2f36; color: white; border: none; padding: 15px; font-size: 12px; border-radius: 6px; cursor: pointer; }
-        .btn-gold { background: var(--gold); color: #000; font-weight: bold; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; width: 100%; }
+        .share-btn { background: #2b2f36; color: white; border: none; padding: 15px; font-size: 13px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-gold { background: var(--gold); color: #000; }
 
-        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; }
-        .privacy-link { cursor: pointer; text-decoration: underline; }
+        footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; width: 100%; }
     </style>
 </head>
 <body>
@@ -71,20 +65,20 @@
         </div>
 
         <div class="header">
-            <h2 id="t-title">Life K-Line Pro</h2>
+            <h2 id="t-title">LIFE K-LINE PRO</h2>
             <button class="lang-btn" id="lang-btn">EN / 中文</button>
         </div>
 
         <div class="destiny-dashboard">
-            <div class="stat-box"><div class="stat-label">格局</div><div id="val-gz" class="stat-value">--</div></div>
-            <div class="stat-box"><div class="stat-label">主星</div><div id="val-star" class="stat-value">--</div></div>
-            <div class="stat-box"><div class="stat-label">五行</div><div id="val-na" class="stat-value">--</div></div>
+            <div class="stat-box"><div class="stat-label">格局</div><div class="stat-value" id="val-gz">--</div></div>
+            <div class="stat-box"><div class="stat-label">主星</div><div class="stat-value" id="val-star">--</div></div>
+            <div class="stat-box"><div class="stat-label">納音</div><div class="stat-value" id="val-na">--</div></div>
         </div>
 
         <div class="input-grid">
-            <div class="input-group"><input type="number" id="year" placeholder="1995"></div>
-            <div class="input-group"><input type="number" id="month" placeholder="05"></div>
-            <div class="input-group"><input type="number" id="day" placeholder="20"></div>
+            <div class="input-group"><input type="number" id="year" placeholder="YYYY"></div>
+            <div class="input-group"><input type="number" id="month" placeholder="MM"></div>
+            <div class="input-group"><input type="number" id="day" placeholder="DD"></div>
         </div>
 
         <button id="main-btn">解碼交易天命</button>
@@ -100,8 +94,8 @@
 
         <div id="shareArea">
             <div id="shareText"></div>
-            <div style="margin-top:20px; border-top:1px solid #2b2f36; padding-top:10px;">
-                <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%; height:60px; border:0;"></iframe>
+            <div style="margin-top:20px; padding-top:15px; border-top:1px dashed var(--border);">
+                <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive'></iframe>
             </div>
         </div>
 
@@ -111,8 +105,8 @@
         </div>
 
         <footer>
-            <p><span class="privacy-link" onclick="alert('Privacy Policy: We do not store your data. Ads provided by A-Ads.')">Privacy Policy</span> | <span>Terms</span></p>
-            <p>© 2025 LuckyFortune Terminal. Data for reference only.</p>
+            <p>本系統僅供娛樂參考，交易有風險，投資需謹慎。</p>
+            <p>© 2025 LuckyFortune Terminal | <span style="text-decoration:underline; cursor:pointer;">Privacy Policy</span></p>
         </footer>
     </div>
 
@@ -123,31 +117,24 @@
     const TG = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
     const DZ = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     
-    const uiLang = {
-        zh: { btn: "解碼天命數據流", save: "📸 保存截圖", copy: "📋 複製研報", water: "Life K-Line Pro" },
-        en: { btn: "DECODE DESTINY", save: "📸 SAVE IMAGE", copy: "📋 COPY REPORT", water: "Life K-Line Pro" }
-    };
-
-    const matrix = {
-        zh: {
-            stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
-            intro: ["格局為「{star}」，資產呈現典型的「脈衝式成長」。", "本命{gz}，納音{na}。天盤現「雙祿交流」之兆，穿透週期能力強。"],
-            peak: ["人生主升浪鎖定在 <span class='highlight'>{year}年</span>，資產溢價最高窗口。"],
-            risk: ["警惕 <span class='highlight'>{year}年</span> 深度回撤，建議採取防禦配置。"],
-            advice: ["策略：知命而不信命，利用K線規律進行博弈。"]
-        },
-        en: {
-            stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
-            intro: ["Structure is {star}. Typical Step-growth model."],
-            peak: ["Main surge locked in <span class='highlight'>{year}</span>. Prosperity stars align."],
-            risk: ["Caution for drawdown in <span class='highlight'>{year}</span>."],
-            advice: ["Strategy: Use K-line laws for asymmetric bets."]
-        }
-    };
-
     const canvas = document.getElementById('kCanvas');
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
+
+    // 核心修復：初始化畫布尺寸，避免重複設置導致放大
+    function initCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        // 只有當物理像素不匹配時才調整，防止點擊時重置寬高導致的放大
+        if (canvas.width !== Math.floor(rect.width * dpr)) {
+            canvas.width = Math.floor(rect.width * dpr);
+            canvas.height = Math.floor(rect.height * dpr);
+            ctx.scale(dpr, dpr);
+        }
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
 
     function getGanZhi(year) { let offset = year - 4; return TG[offset % 10] + DZ[offset % 12]; }
     function getNaYin(gz) {
@@ -160,24 +147,30 @@
         const y = parseInt(document.getElementById('year').value);
         const m = parseInt(document.getElementById('month').value);
         const d = parseInt(document.getElementById('day').value);
-        if (!y || !m || !d) return;
+        if (!y || !m || !d) { alert("請完整輸入年月日"); return; }
+
+        initCanvas(); // 確保繪製前尺寸正確
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+
+        // 使用 clearRect 而不是重置寬高來清空畫布，徹底解決放大 Bug
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#0b0e11";
+        ctx.fillRect(0, 0, w, h);
 
         const gz = getGanZhi(y);
-        const star = matrix[curLang].stars[(y + m + d) % 14];
+        const stars = ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"];
+        const star = stars[(y + m + d) % 14];
         const na = getNaYin(gz);
+
         document.getElementById('val-gz').innerText = gz;
         document.getElementById('val-star').innerText = star;
         document.getElementById('val-na').innerText = na;
 
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-        const w = rect.width, h = rect.height;
-        ctx.fillStyle = "#0b0e11"; ctx.fillRect(0,0,w,h);
-
-        let curY = h * 0.6; kData = [];
-        let maxP = {y:0, v:999}, minP = {y:0, v:-999};
+        let curY = h * 0.6;
+        kData = [];
+        let maxYear = y;
 
         for (let i = 0; i < 50; i++) {
             const cy = y + i;
@@ -185,50 +178,51 @@
             let vol = (Math.abs(DZ.indexOf(gz[1]) - DZ.indexOf(cgz[1])) === 6) ? 70 : 25;
             const r = (Math.abs(Math.sin(cy * 1.6 + m + d + i)) * 1000) % 1;
             const open = curY, close = curY - (r - 0.5) * vol;
-            kData.push({ x: 40 + i * ((w-70)/50), open, close, year: cy, gz: cgz, change: ((open-close)/open*100).toFixed(2) });
-            if (close < maxP.v) { maxP.v = close; maxP.y = cy; }
-            if (close > minP.v) { minP.v = close; minP.y = cy; }
+            
+            const posX = 40 + i * ((w - 70) / 50);
+            kData.push({ x: posX, open, close, year: cy, gz: cgz, change: ((open - close) / open * 100).toFixed(2) });
+
             ctx.strokeStyle = ctx.fillStyle = close < open ? "#0ecb81" : "#f6465d";
-            ctx.beginPath(); ctx.moveTo(kData[i].x, open); ctx.lineTo(kData[i].x, close); ctx.lineWidth = 3; ctx.stroke();
-            if (i % 10 === 0) { ctx.fillStyle = "#474d57"; ctx.font = "10px monospace"; ctx.fillText(cy, kData[i].x-12, h-12); }
+            ctx.beginPath();
+            ctx.moveTo(posX, open);
+            ctx.lineTo(posX, close);
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            if (i % 10 === 0) {
+                ctx.fillStyle = "#474d57";
+                ctx.font = "10px monospace";
+                ctx.fillText(cy, posX - 12, h - 12);
+            }
             curY = close;
         }
 
-        const seed = y + m + d;
-        const M = matrix[curLang];
-        const select = (arr, salt) => arr[(seed + salt) % arr.length];
-        const report = `📊 ${curLang === 'zh' ? '【天命研報】' : '[REPORT]'}\n\n` +
-            `✨ ${gz} / ${star} / ${na}\n\n` +
-            `1️⃣ ${select(M.intro, 1).replace("{star}", star).replace("{na}", na).replace("{gz}", gz)}\n\n` +
-            `2️⃣ ${select(M.peak, 2).replace("{year}", maxP.y)}\n\n` +
-            `3️⃣ ${select(M.risk, 3).replace("{year}", minP.y)}\n\n` +
-            `5️⃣ ${select(M.advice, 5)}`;
-        document.getElementById('shareText').innerHTML = report;
+        // 報告內容
+        const report = `📊 【天命研報】\n\n✨ 格局：${gz} / ${star} / ${na}\n\n數據流顯示，您的資產模型呈現「${na}」特有的穩定擴張特徵。${y+30}年 前後將迎來重大的多頭信號。`;
+        document.getElementById('shareText').innerText = report;
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
     }
 
-    // Tooltip 交互
     canvas.addEventListener('mousemove', (e) => {
         if (!kData.length) return;
         const rect = canvas.getBoundingClientRect();
-        const mx = (e.clientX - rect.left);
+        const mx = e.clientX - rect.left;
         const p = kData.reduce((prev, curr) => Math.abs(curr.x - mx) < Math.abs(prev.x - mx) ? curr : prev);
-        if (Math.abs(p.x - mx) < 15) {
+
+        if (Math.abs(p.x - mx) < 10) {
             tooltip.style.display = 'block';
-            tooltip.style.left = (mx + 10) + 'px'; tooltip.style.top = '20px';
-            tooltip.innerHTML = `<b>${p.year}</b><br><span style="color:${p.close<p.open?'#0ecb81':'#f6465d'}">${p.change>0?'▲':'▼'} ${Math.abs(p.change)}%</span>`;
-        } else { tooltip.style.display = 'none'; }
+            tooltip.style.left = (mx + 15) + 'px';
+            tooltip.style.top = '20px';
+            tooltip.innerHTML = `<b>${p.year} (${p.gz})</b><br><span style="color:${p.close < p.open ? '#0ecb81' : '#f6465d'}">${p.change > 0 ? '▲' : '▼'} ${Math.abs(p.change)}%</span>`;
+        } else {
+            tooltip.style.display = 'none';
+        }
     });
 
     document.getElementById('main-btn').addEventListener('click', draw);
-    document.getElementById('lang-btn').addEventListener('click', () => {
-        curLang = curLang === 'zh' ? 'en' : 'zh';
-        document.getElementById('main-btn').innerText = uiLang[curLang].btn;
-        if(kData.length > 0) draw();
-    });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert("Copied!"));
+        navigator.clipboard.writeText(document.getElementById('shareText').innerText).then(() => alert("研報已複製！"));
     });
 })();
 </script>
