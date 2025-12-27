@@ -9,9 +9,9 @@
         body { background: var(--bg); color: var(--text-main); font-family: -apple-system, 'PingFang TC', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* 廣告容器與故障切換樣式 */
-        .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: visible; position: relative; }
-        .ad-backup { display: none; width: 100%; height: 100%; text-align: center; }
+        /* 廣告容器瀑布流邏輯 */
+        .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: visible; position: relative; }
+        #fallback-ad { display: none; width: 100%; } /* 預設隱藏 A-Ads 替補 */
 
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
         .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; letter-spacing: 1px; }
@@ -44,15 +44,14 @@
         .btn-social { background: #1e2329; color: var(--text-dim); border: 1px solid var(--border); font-size: 10px; }
         
         footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; width: 100%; }
+        .p-link { text-decoration: underline; cursor: pointer; margin-top: 8px; display: inline-block; }
         .highlight { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="ad-wrapper">
-            <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%;height:60px;border:0;"></iframe>
-        </div>
+        <script src="https://pl28347373.effectivegatecpm.com/12/ca/79/12ca79762686ca482ac18feb50d1dd88.js"></script>
 
         <div class="header">
             <h2 id="t-title">LIFE K-LINE PRO</h2>
@@ -78,13 +77,12 @@
             <canvas id="kCanvas"></canvas>
         </div>
 
-        <div class="ad-wrapper" id="main-ad-container">
+        <div class="ad-wrapper" id="master-ad-container">
             <div id="container-2afeab69b95d509c135fb85eb754b4f2">
-                <script async="async" data-cfasync="false" src="https://pl28347168.effectivegatecpm.com/2afeab69b95d509c135fb85eb754b4f2/invoke.js" onerror="handleAdError()"></script>
+                <script async="async" data-cfasync="false" src="https://pl28347168.effectivegatecpm.com/2afeab69b95d509c135fb85eb754b4f2/invoke.js"></script>
             </div>
-            <div id="backup-ad" class="ad-backup">
-                <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%;height:60px;border:0; margin-top:10px;"></iframe>
-                <p style="font-size:10px; color:#474d57; margin-top:5px;">[Sponsored Content]</p>
+            <div id="fallback-ad">
+                <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%;height:60px;border:0;"></iframe>
             </div>
         </div>
 
@@ -102,34 +100,38 @@
         </div>
 
         <footer>
-            <p id="t-disclaim">本系統僅供娛樂參考，交易有風險，投資需謹慎。</p>
+            <p id="t-disclaim">本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成。</p>
             <p>© 2025 LuckyFortune Terminal</p>
+            <span class="p-link" onclick="document.getElementById('p-modal').style.display='block'">Privacy Policy</span>
         </footer>
     </div>
 
-    <script src="https://pl28347373.effectivegatecpm.com/12/ca/79/12ca79762686ca482ac18feb50d1dd88.js"></script>
+    <div id="p-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:85%; background:#1e2329; border:1px solid var(--gold); padding:20px; z-index:5000; border-radius:8px;">
+        <div style="text-align:right; cursor:pointer; color:var(--gold)" onclick="this.parentElement.style.display='none'">[CLOSE]</div>
+        <p id="p-content"><b>Privacy Policy:</b> Your data is processed locally. We do not store personal info. 3rd-party ads may use cookies.</p>
+    </div>
 
 <script>
-// 廣告故障切換邏輯
-function handleAdError() {
-    console.log("主廣告加載失敗，切換至備用廣告...");
-    document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2').style.display = 'none';
-    document.getElementById('backup-ad').style.display = 'block';
-}
-
-// 檢測腳本加載狀況的超時邏輯
-setTimeout(() => {
-    const adBox = document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2');
-    if (adBox && adBox.innerHTML.trim() === "" || adBox.offsetHeight < 10) {
-        handleAdError();
-    }
-}, 5000); // 如果 5 秒內廣告位沒被填充，則顯示備用內容
-
 (function() {
     let curLang = 'zh';
     let kData = [];
     const TG = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
     const DZ = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+    
+    // 廣告瀑布流監測邏輯
+    function checkAdFill() {
+        setTimeout(() => {
+            const adContainer = document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2');
+            const fallback = document.getElementById('fallback-ad');
+            // 如果 Adsterra 容器內沒有 iframe 或高度為 0，則判定失敗，顯示 A-Ads
+            if (adContainer.offsetHeight < 10 || adContainer.innerHTML.trim().length < 50) {
+                console.log("Adsterra failed or blocked. Activating fallback ad...");
+                adContainer.style.display = 'none';
+                fallback.style.display = 'block';
+            }
+        }, 3000); // 3秒後檢查填充情況
+    }
+
     const canvas = document.getElementById('kCanvas');
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('tooltip');
@@ -139,47 +141,32 @@ setTimeout(() => {
             title: "LIFE K-LINE PRO", l1: "格局", l2: "主星", l3: "五行", btn: "解碼交易天命數據流",
             save: "📸 保存帶水印截圖", copy: "📋 複製專家研報",
             disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成，不構成投資建議。",
-            water: "Life K-Line Pro | 交易天命",
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
             na: ["海中金", "大溪水", "天上火", "路旁土", "大林木"],
             types: ["脈衝式成長", "螺旋式上升", "階梯式躍遷", "幾何級爆發", "反轉式觸底", "箱體震盪型", "長線慢牛型", "極端波幅型"],
             signs: ["雙祿交流", "魁鉞夾命", "日月並明", "三奇加會", "紫府同宮", "金燦光輝"],
-            advice_core: [
-                "策略：利用跨週期均線修正情緒偏差，在主升浪期間堅定持倉。",
-                "建議：市場恐懼時應逆向思考，本命格利於在極端回撤中建立多頭頭寸。",
-                "心法：知命而不信命，所有的K線波動皆是認知的變現，需嚴格執行止盈策略。"
-            ],
-            patterns: [
-                "天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，適合跨週期佈局。",
-                "命盤與當前大趨勢產生強烈共振，顯示出「{type}」的獨特路徑，早期雖有震盪但中後期後勁十足。",
-                "觀察其能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時表現卓越。"
-            ]
+            advice_core: ["策略：利用跨週期均線修正情緒偏差，在主升浪期間堅定持倉。","建議：市場恐懼時應逆向思考，本命格利於在極端回撤中建立多頭頭寸。","心法：知命而不信命，所有的K線波動皆是認知的變現，需嚴格執行止盈策略。"],
+            patterns: ["天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，適合跨週期佈局。","命盤與當前大趨勢產生強烈共振，顯示出「{type}」的獨特路徑，早期雖有震盪但中後期後勁十足。","觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時表現卓越。"]
         },
         en: {
             title: "LIFE K-LINE PRO", l1: "PILLAR", l2: "STAR", l3: "ELEMENT", btn: "DECODE DESTINY DATA",
             save: "📸 SAVE SCREENSHOT", copy: "📋 COPY REPORT",
             disclaim: "For entertainment only. Trading involves risk. Models are algorithmically generated.",
-            water: "Life K-Line Pro | Trading Destiny",
             stars: ["ZiWei", "TianJi", "Sun", "WuQu", "TianTong", "LianZhen", "TianFu", "Moon", "TanLang", "JuMen", "TianXiang", "TianLiang", "QiSha", "PoJun"],
             na: ["Ocean Gold", "Stream Water", "Heaven Fire", "Road Earth", "Forest Wood"],
             types: ["Pulsed Growth", "Spiral Ascent", "Step Transition", "Geometric Blast", "V-Shape Bottom", "Box Oscillation", "Slow Bull", "High Volatility"],
             signs: ["Double Wealth", "Elite Alignment", "Sun-Moon Harmony", "Triple Fortune", "Imperial Palace", "Golden Glow"],
-            advice_core: [
-                "Strategy: Use cross-cycle averages to correct bias and hold firm during surges.",
-                "Advice: Think contrarily when market fears; your pillar favors long positions in extreme dips.",
-                "Heart: Destiny is awareness; every K-line move is your mind reflecting in the market volatility."
-            ],
-            patterns: [
-                "The '{sign}' omen suggests your net worth has high resilience in long-term cycles with strong recovery.",
-                "Strong resonance with current trends indicates a '{type}' path with potential long-term momentum.",
-                "Main star '{star}' radiates strong intuition, especially when breaking through key psychological resistance."
-            ]
+            advice_core: ["Strategy: Use cross-cycle averages to correct bias.","Advice: Think contrarily when market fears; your pillar favors long positions in dips.","Heart: Destiny is awareness; every K-line move is your mind reflecting market volatility."],
+            patterns: ["The '{sign}' omen suggests your net worth has high resilience in long-term cycles.","Strong resonance with trends indicates a '{type}' path with potential momentum.","Main star '{star}' radiates strong intuition, especially breaking through psychological resistance."]
         }
     };
 
     function updateUI() {
         const t = i18n[curLang];
         document.getElementById('t-title').innerText = t.title;
+        document.getElementById('t-l1').innerText = t.l1;
+        document.getElementById('t-l2').innerText = t.l2;
+        document.getElementById('t-l3').innerText = t.l3;
         document.getElementById('main-btn').innerText = t.btn;
         document.getElementById('save-btn').innerText = t.save;
         document.getElementById('copy-btn').innerText = t.copy;
@@ -197,6 +184,7 @@ setTimeout(() => {
         canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
         ctx.scale(dpr, dpr);
         const w = rect.width, h = rect.height;
+
         ctx.fillStyle = "#0b0e11"; ctx.fillRect(0, 0, w, h);
 
         let curY = h * 0.5; kData = [];
@@ -218,22 +206,30 @@ setTimeout(() => {
         }
 
         const t = i18n[curLang];
-        const star = t.stars[(y + m + d) % 14];
-        const type = t.types[(y * m + d) % 8];
+        const sIdx = (y + m + d) % 14;
+        const tIdx = (y * m + d) % 8;
+        const siIdx = (y + d) % 6;
+        const aIdx = (y + m + d) % 3;
+        const pIdx = (y * d) % 3;
+
+        const star = t.stars[sIdx];
+        const type = t.types[tIdx];
         const gz = TG[(y - 4) % 10] + DZ[(y - 4) % 12];
         const na = t.na[y % 5];
-        const sign = t.signs[(y + d) % 6];
+        const sign = t.signs[siIdx];
 
         document.getElementById('val-gz').innerText = gz;
         document.getElementById('val-star').innerText = star;
         document.getElementById('val-na').innerText = na;
 
-        const ptn = t.patterns[(y*d)%3].replace("{sign}", sign).replace("{type}", type).replace("{star}", star);
+        const ptn = t.patterns[pIdx].replace("{sign}", sign).replace("{type}", type).replace("{star}", star);
+        const resPeak = curLang === 'zh' ? `人生資產主升浪預計在 <span class='highlight'>${peakY}年</span> 到達巔峰。` : `Wealth peak surge expected in <span class='highlight'>${peakY}</span>.`;
+        
         const fullReport = `📊 ${curLang=='zh'?'【天命金線交易研報】':'[TRADE DESTINY REPORT]'}\n\n` + 
-                         `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型呈現「${type}」，主星「${star}」坐鎮。${ptn}\n\n` +
-                         `2️⃣ 【波段預測】\n人生資產主升浪預計在 ${peakY}年 到達巔峰。在此之前需注意週期性波動。\n\n` +
-                         `3️⃣ 【交易策略】\n${t.advice_core[(y+m+d)%3]}\n\n` +
-                         `📍 Generated by LuckyFortune Terminal - V22.0`;
+                         `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型「${type}」，主星「${star}」。${ptn}\n\n` +
+                         `2️⃣ 【波段預測】\n${resPeak}\n\n` +
+                         `3️⃣ 【交易策略】\n${t.advice_core[aIdx]}\n\n` +
+                         `📍 LuckyFortune Terminal - V22.0 Pro`;
 
         document.getElementById('shareText').innerHTML = fullReport.replace(/\n/g, "<br>");
         document.getElementById('shareArea').style.display = 'block';
@@ -241,7 +237,7 @@ setTimeout(() => {
         document.getElementById('social-grid').style.display = 'grid';
 
         const shareUrl = window.location.href;
-        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nView: " + shareUrl);
+        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nCheck yours: " + shareUrl);
         document.getElementById('share-wa').href = `https://wa.me/?text=${shareMsg}`;
         document.getElementById('share-tg').href = `https://t.me/share/url?url=${shareUrl}&text=${shareMsg}`;
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareMsg}`;
@@ -262,18 +258,20 @@ setTimeout(() => {
     document.getElementById('main-btn').addEventListener('click', draw);
     document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'zh' ? 'en' : 'zh'; updateUI(); if(kData.length) draw(); });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(document.getElementById('shareText').innerText).then(() => alert("Copied!"));
+        navigator.clipboard.writeText(document.getElementById('shareText').innerText).then(() => alert(curLang=='zh'?"研報已複製":"Report Copied"));
     });
+
     document.getElementById('save-btn').addEventListener('click', () => {
         const temp = document.createElement('canvas'); const tCtx = temp.getContext('2d');
         const dpr = window.devicePixelRatio || 1;
         temp.width = canvas.width; temp.height = canvas.height;
         tCtx.drawImage(canvas, 0, 0);
         tCtx.fillStyle = "rgba(240,185,11,0.5)"; tCtx.font = "bold 18px Arial"; tCtx.textAlign="right";
-        tCtx.fillText(i18n[curLang].water, (temp.width/dpr)-15, (temp.height/dpr)-40);
+        tCtx.fillText("Life K-Line Pro", (temp.width/dpr)-15, (temp.height/dpr)-40);
         const a = document.createElement('a'); a.download=`Life_KLine.png`; a.href=temp.toDataURL(); a.click();
     });
-    updateUI();
+
+    window.onload = () => { updateUI(); checkAdFill(); };
 })();
 </script>
 </body>
