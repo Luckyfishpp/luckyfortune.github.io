@@ -9,9 +9,9 @@
         body { background: var(--bg); color: var(--text-main); font-family: -apple-system, 'PingFang TC', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; box-sizing: border-box; }
         
-        /* 廣告容器瀑布流邏輯 */
-        .ad-wrapper { width: 100%; margin: 15px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: visible; position: relative; }
-        #fallback-ad { display: none; width: 100%; } /* 預設隱藏 A-Ads 替補 */
+        /* 廣告位樣式 */
+        .ad-wrapper { width: 100%; margin: 10px 0; background: #0d1117; border-radius: 4px; min-height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); overflow: hidden; }
+        #fallback-mid { display: none; width: 100%; }
 
         .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
         .header h2 { font-size: 18px; color: var(--gold); margin: 0; font-weight: 900; letter-spacing: 1px; }
@@ -29,29 +29,29 @@
         
         #canvasWrap { width: 100%; height: 320px; background: #0b0e11; border: 1px solid var(--border); position: relative; border-radius: 4px; margin-top: 15px; overflow: hidden; }
         canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 10; }
-        
         #tooltip { position: absolute; display: none; background: rgba(30,35,41,0.95); border: 1px solid var(--gold); padding: 8px; border-radius: 4px; font-size: 11px; z-index: 1001; pointer-events: none; color: white; white-space: nowrap; }
         
         #shareArea { display: none; margin-top: 20px; border: 1px solid var(--border); padding: 25px; border-radius: 6px; background: #161a1e; border-left: 6px solid var(--gold); }
         #shareText { font-size: 14px; line-height: 1.8; color: var(--text-main); white-space: pre-wrap; text-align: justify; }
+        .highlight { color: var(--gold); font-weight: bold; }
         
         .action-grid { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; width: 100%; }
         .social-grid { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; width: 100%; }
-        
         .btn { padding: 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
         .btn-gold { background: var(--gold); color: #000; }
         .btn-dark { background: #2b2f36; color: #fff; }
         .btn-social { background: #1e2329; color: var(--text-dim); border: 1px solid var(--border); font-size: 10px; }
         
         footer { margin-top: 40px; font-size: 11px; color: var(--text-dim); text-align: center; border-top: 1px solid var(--border); padding: 25px 0; width: 100%; }
-        .p-link { text-decoration: underline; cursor: pointer; margin-top: 8px; display: inline-block; }
-        .highlight { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
+    <script src="https://pl28347373.effectivegatecpm.com/12/ca/79/12ca79762686ca482ac18feb50d1dd88.js"></script>
 
     <div class="container">
-        <script src="https://pl28347373.effectivegatecpm.com/12/ca/79/12ca79762686ca482ac18feb50d1dd88.js"></script>
+        <div class="ad-wrapper">
+            <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%;height:60px;border:0;"></iframe>
+        </div>
 
         <div class="header">
             <h2 id="t-title">LIFE K-LINE PRO</h2>
@@ -77,11 +77,11 @@
             <canvas id="kCanvas"></canvas>
         </div>
 
-        <div class="ad-wrapper" id="master-ad-container">
+        <div class="ad-wrapper" id="mid-ad-box">
             <div id="container-2afeab69b95d509c135fb85eb754b4f2">
                 <script async="async" data-cfasync="false" src="https://pl28347168.effectivegatecpm.com/2afeab69b95d509c135fb85eb754b4f2/invoke.js"></script>
             </div>
-            <div id="fallback-ad">
+            <div id="fallback-mid">
                 <iframe data-aa='2422219' src='//acceptable.a-ads.com/2422219/?size=Adaptive' style="width:100%;height:60px;border:0;"></iframe>
             </div>
         </div>
@@ -102,13 +102,7 @@
         <footer>
             <p id="t-disclaim">本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成。</p>
             <p>© 2025 LuckyFortune Terminal</p>
-            <span class="p-link" onclick="document.getElementById('p-modal').style.display='block'">Privacy Policy</span>
         </footer>
-    </div>
-
-    <div id="p-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:85%; background:#1e2329; border:1px solid var(--gold); padding:20px; z-index:5000; border-radius:8px;">
-        <div style="text-align:right; cursor:pointer; color:var(--gold)" onclick="this.parentElement.style.display='none'">[CLOSE]</div>
-        <p id="p-content"><b>Privacy Policy:</b> Your data is processed locally. We do not store personal info. 3rd-party ads may use cookies.</p>
     </div>
 
 <script>
@@ -118,18 +112,16 @@
     const TG = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
     const DZ = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     
-    // 廣告瀑布流監測邏輯
-    function checkAdFill() {
+    // 瀑布流監測
+    function watchAd() {
         setTimeout(() => {
-            const adContainer = document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2');
-            const fallback = document.getElementById('fallback-ad');
-            // 如果 Adsterra 容器內沒有 iframe 或高度為 0，則判定失敗，顯示 A-Ads
-            if (adContainer.offsetHeight < 10 || adContainer.innerHTML.trim().length < 50) {
-                console.log("Adsterra failed or blocked. Activating fallback ad...");
-                adContainer.style.display = 'none';
-                fallback.style.display = 'block';
+            const main = document.getElementById('container-2afeab69b95d509c135fb85eb754b4f2');
+            const fall = document.getElementById('fallback-mid');
+            if (main.innerHTML.length < 100 || main.offsetHeight < 10) {
+                main.style.display = 'none';
+                fall.style.display = 'block';
             }
-        }, 3000); // 3秒後檢查填充情況
+        }, 4000);
     }
 
     const canvas = document.getElementById('kCanvas');
@@ -143,10 +135,18 @@
             disclaim: "本系統僅供娛樂參考，交易有風險，投資需謹慎。數據模型基於算法生成，不構成投資建議。",
             stars: ["紫微", "天機", "太陽", "武曲", "天同", "廉貞", "天府", "太陰", "貪狼", "巨門", "天相", "天梁", "七殺", "破軍"],
             na: ["海中金", "大溪水", "天上火", "路旁土", "大林木"],
-            types: ["脈衝式成長", "螺旋式上升", "階梯式躍遷", "幾何級爆發", "反轉式觸底", "箱體震盪型", "長線慢牛型", "極端波幅型"],
+            types: ["脈衝式成長型", "螺旋式上升型", "階梯式躍遷型", "幾何級爆發型", "反轉式觸底型", "箱體震盪型", "長線慢牛型", "極端波幅型"],
             signs: ["雙祿交流", "魁鉞夾命", "日月並明", "三奇加會", "紫府同宮", "金燦光輝"],
-            advice_core: ["策略：利用跨週期均線修正情緒偏差，在主升浪期間堅定持倉。","建議：市場恐懼時應逆向思考，本命格利於在極端回撤中建立多頭頭寸。","心法：知命而不信命，所有的K線波動皆是認知的變現，需嚴格執行止盈策略。"],
-            patterns: ["天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，適合跨週期佈局。","命盤與當前大趨勢產生強烈共振，顯示出「{type}」的獨特路徑，早期雖有震盪但中後期後勁十足。","觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時表現卓越。"]
+            advice_core: [
+                "核心策略：利用跨週期均線修正情緒偏差，在主升浪期間堅定持倉，避免頻繁交易導致的損耗。",
+                "深度建議：市場恐懼時應逆向思考，本命格利於在極端回撤中建立多頭頭寸，把握低位吸籌機會。",
+                "交易心法：知命而不信命，所有的K線波動皆是認知的變現，需嚴格執行止盈策略，守住利潤。"
+            ],
+            patterns: [
+                "天盤顯示「{sign}」之奇兆，這意味著資產淨值在長線週期內具有極強的修復能力，即便短期回撤也能迅速收復失地。",
+                "命盤與當前大趨勢產生強烈共振，呈現「{type}」的獨特路徑，早期雖有震盪築底過程，但中後期爆發力驚人。",
+                "觀察能量分布，主星「{star}」散發出強大的交易直覺，尤其在跨越關鍵心理阻力位時，能精準捕捉突破時機。"
+            ]
         },
         en: {
             title: "LIFE K-LINE PRO", l1: "PILLAR", l2: "STAR", l3: "ELEMENT", btn: "DECODE DESTINY DATA",
@@ -156,8 +156,16 @@
             na: ["Ocean Gold", "Stream Water", "Heaven Fire", "Road Earth", "Forest Wood"],
             types: ["Pulsed Growth", "Spiral Ascent", "Step Transition", "Geometric Blast", "V-Shape Bottom", "Box Oscillation", "Slow Bull", "High Volatility"],
             signs: ["Double Wealth", "Elite Alignment", "Sun-Moon Harmony", "Triple Fortune", "Imperial Palace", "Golden Glow"],
-            advice_core: ["Strategy: Use cross-cycle averages to correct bias.","Advice: Think contrarily when market fears; your pillar favors long positions in dips.","Heart: Destiny is awareness; every K-line move is your mind reflecting market volatility."],
-            patterns: ["The '{sign}' omen suggests your net worth has high resilience in long-term cycles.","Strong resonance with trends indicates a '{type}' path with potential momentum.","Main star '{star}' radiates strong intuition, especially breaking through psychological resistance."]
+            advice_core: [
+                "Strategy: Use cross-cycle averages to correct emotional bias. Hold firm during surges.",
+                "Advice: Be contrarian when the market is fearful. Your destiny favors long positions in dips.",
+                "Mindset: Destiny is awareness; K-line moves reflect your cognitive edge. Execute profit-taking strictly."
+            ],
+            patterns: [
+                "The '{sign}' omen suggests your net worth has high resilience in long-term cycles.",
+                "Resonance with global trends indicates a '{type}' path with massive potential momentum.",
+                "Main star '{star}' radiates strong intuition, especially when breaking key resistance levels."
+            ]
         }
     };
 
@@ -212,10 +220,10 @@
         const aIdx = (y + m + d) % 3;
         const pIdx = (y * d) % 3;
 
-        const star = t.stars[sIdx];
-        const type = t.types[tIdx];
         const gz = TG[(y - 4) % 10] + DZ[(y - 4) % 12];
         const na = t.na[y % 5];
+        const star = t.stars[sIdx];
+        const type = t.types[tIdx];
         const sign = t.signs[siIdx];
 
         document.getElementById('val-gz').innerText = gz;
@@ -223,26 +231,26 @@
         document.getElementById('val-na').innerText = na;
 
         const ptn = t.patterns[pIdx].replace("{sign}", sign).replace("{type}", type).replace("{star}", star);
-        const resPeak = curLang === 'zh' ? `人生資產主升浪預計在 <span class='highlight'>${peakY}年</span> 到達巔峰。` : `Wealth peak surge expected in <span class='highlight'>${peakY}</span>.`;
+        const resPeak = curLang === 'zh' ? `人生資產主升浪預計在 <span class='highlight'>${peakY}年</span> 到達巔峰。` : `Wealth peak expected in <span class='highlight'>${peakY}</span>.`;
         
         const fullReport = `📊 ${curLang=='zh'?'【天命金線交易研報】':'[TRADE DESTINY REPORT]'}\n\n` + 
-                         `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型「${type}」，主星「${star}」。${ptn}\n\n` +
-                         `2️⃣ 【波段預測】\n${resPeak}\n\n` +
+                         `1️⃣ 【核心格局】\n本命「${gz}」，納音「${na}」。模型屬於「${type}」，主星「${star}」入命。${ptn}\n\n` +
+                         `2️⃣ 【波段預測】\n${resPeak} 建議在此區間內注意情緒溢價，保持資產配置的流動性。\n\n` +
                          `3️⃣ 【交易策略】\n${t.advice_core[aIdx]}\n\n` +
-                         `📍 LuckyFortune Terminal - V22.0 Pro`;
+                         `📍 LuckyFortune Terminal - Professional V23.0`;
 
         document.getElementById('shareText').innerHTML = fullReport.replace(/\n/g, "<br>");
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('action-grid').style.display = 'grid';
         document.getElementById('social-grid').style.display = 'grid';
 
-        const shareUrl = window.location.href;
-        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nCheck yours: " + shareUrl);
+        const shareMsg = encodeURIComponent(fullReport.replace(/<br>/g, "\n") + "\nView: " + window.location.href);
         document.getElementById('share-wa').href = `https://wa.me/?text=${shareMsg}`;
-        document.getElementById('share-tg').href = `https://t.me/share/url?url=${shareUrl}&text=${shareMsg}`;
+        document.getElementById('share-tg').href = `https://t.me/share/url?url=${window.location.href}&text=${shareMsg}`;
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${shareMsg}`;
     }
 
+    // 交互與按鈕邏輯
     canvas.addEventListener('mousemove', (e) => {
         if (!kData.length) return;
         const rect = canvas.getBoundingClientRect();
@@ -258,9 +266,8 @@
     document.getElementById('main-btn').addEventListener('click', draw);
     document.getElementById('lang-btn').addEventListener('click', () => { curLang = curLang === 'zh' ? 'en' : 'zh'; updateUI(); if(kData.length) draw(); });
     document.getElementById('copy-btn').addEventListener('click', () => {
-        navigator.clipboard.writeText(document.getElementById('shareText').innerText).then(() => alert(curLang=='zh'?"研報已複製":"Report Copied"));
+        navigator.clipboard.writeText(document.getElementById('shareArea').innerText).then(() => alert(curLang=='zh'?"研報已複製":"Copied"));
     });
-
     document.getElementById('save-btn').addEventListener('click', () => {
         const temp = document.createElement('canvas'); const tCtx = temp.getContext('2d');
         const dpr = window.devicePixelRatio || 1;
@@ -271,7 +278,7 @@
         const a = document.createElement('a'); a.download=`Life_KLine.png`; a.href=temp.toDataURL(); a.click();
     });
 
-    window.onload = () => { updateUI(); checkAdFill(); };
+    window.onload = () => { updateUI(); watchAd(); };
 })();
 </script>
 </body>
